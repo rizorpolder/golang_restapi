@@ -1,0 +1,1 @@
+├── scripts/                      # вспомогательные shell/ps1-скрипты (migrate.sh, gen-proto.sh)

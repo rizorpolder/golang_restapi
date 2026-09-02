@@ -1,0 +1,7 @@
+cmd/ # точки входа — по одной папке на сервис
+│   ├── account/
+│   │   └── main.go
+│   ├── order/
+│   │   └── main.go
+│   └── notification/
+│       └── main.go

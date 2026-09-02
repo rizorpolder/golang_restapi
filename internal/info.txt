@@ -1,0 +1,15 @@
+├── internal/                     # весь код, недоступный извне модуля
+│   ├── account/                  # бизнес-логика сервиса account
+│   │   ├── domain/               # сущности, доменные интерфейсы
+│   │   ├── repository/           # работа с БД (postgres, redis...)
+│   │   ├── service/               # use-case'ы / бизнес-логика
+│   │   └── transport/
+│   │       ├── http/             # REST-хендлеры
+│   │       └── grpc/             # gRPC-хендлеры, если есть
+│   ├── order/                    # та же раскладка для order
+│   ├── notification/             # та же раскладка для notification
+│   └── platform/                 # общее для всех сервисов: не бизнес-логика, а инфраструктура
+│       ├── db/                   # обёртки над sql.DB / pgx / gorm
+│       ├── kafka/                # producer/consumer обёртки
+│       ├── logger/
+│       └── config/                # загрузка env/yaml конфигов

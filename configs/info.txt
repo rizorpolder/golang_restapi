@@ -1,0 +1,4 @@
+├── configs/                      # yaml/env-конфиги приложений по окружениям
+│   ├── account.yaml
+│   └── order.yaml
+│

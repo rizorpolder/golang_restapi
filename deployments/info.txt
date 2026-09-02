@@ -1,0 +1,15 @@
+├── deployments/                  # всё, что не Go-код, а про инфраструктуру
+│   ├── docker/
+│   │   ├── account.Dockerfile
+│   │   ├── order.Dockerfile
+│   │   └── notification.Dockerfile
+│   └── observability/
+│       ├── grafana/
+│       │   ├── dashboards/       # *.json дашборды
+│       │   └── provisioning/     # datasources.yml, dashboards.yml
+│       ├── prometheus/
+│       │   └── prometheus.yml
+│       └── kafka/
+│           └── init/             # скрипт создания топиков при старте
+│               └── create-topics.sh
+│
