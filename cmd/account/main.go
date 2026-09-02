@@ -5,6 +5,8 @@ import (
 	"golang_restapi/internal/logger"
 	"log"
 
+	_ "golang_restapi/docs"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -13,8 +15,8 @@ import (
 // @title Account Service
 // @version 1.0
 // @description Account Service
-// @host localhost:8080\
-// @BasePath
+// @host localhost:8080
+// @BasePath /
 func main() {
 	cfg, err := config.Load()
 	if err != nil {
@@ -51,7 +53,7 @@ func main() {
 	l.Info().Msgf("Service starting up")
 }
 
-// @PingExample godoc
+// PingExample godoc
 // @Summary Проверка доступности сервиса
 // @Description Возвращает pong
 // @Tags health

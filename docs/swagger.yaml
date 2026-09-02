@@ -1,4 +1,5 @@
-host: localhost:8080\
+basePath: /
+host: localhost:8080
 info:
   contact: {}
   description: Account Service
