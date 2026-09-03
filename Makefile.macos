@@ -104,7 +104,7 @@ help:
 	@echo "help  			- Show this help"
 
 #Development workflow
-dev : fmt  lint test build
+dev : fmt lint test build
 
 #CI/CD workflow
 ci : deps fmt lint test build
