@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"golang_restapi/internal/config"
 	"golang_restapi/internal/logger"
-	"golang_restapi/internal/repository"
+	"golang_restapi/internal/repository/account"
 	"log"
 	"net"
 
@@ -41,7 +41,7 @@ func main() {
 
 	l.Info().Msgf("Connected to DB")
 
-	repo := repository.NewRepository(db, &l)
+	repo := account.NewRepository(db, &l)
 	_ = repo
 
 	//router := gin.Default()
