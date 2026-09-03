@@ -1,6 +1,6 @@
 syntax = "proto3";
 package account;
-
+option go_package =  "github.com/rizorpolder/golang_restapi/contracts/account/go;account";
 import "google/protobuf/timestamp.proto";
 
 message CreateUser{

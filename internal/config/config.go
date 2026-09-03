@@ -9,10 +9,10 @@ import (
 
 type Config struct {
 	ServiceName string `env:"SERVICE_NAME" required:"true"`
-	AppEnv      string `env:"APP_ENV" required:"true" default:"development"`
-	Host        string `env:"HOST" required:"true" default:"localhost"`
-	Port        string `env:"PORT" required:"true" default:"9000"`
-	Loglevel    string `env:"LOG_LEVEL" required:"true" default:"info"`
+	AppEnv      string `env:"APP_ENV" required:"true" envDefault:"development"`
+	Host        string `env:"HTTP_HOST" required:"true" envDefault:"localhost"`
+	Port        string `env:"HTTP_PORT" required:"true" envDefault:"9000"`
+	Loglevel    string `env:"LOG_LEVEL" required:"true" envDefault:"info"`
 
 	DbDns string `env:"DB_DNS" required:"true"`
 }

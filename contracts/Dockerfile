@@ -1,4 +1,4 @@
-FROM golang:1.24
+FROM golang:1.25
 ARG PROTOC_VERSION=27.1
 RUN apt-get update && apt-get install -y unzip curl git && rm -rf /var/lib/apt/lists/* &&  \
     curl -sSL https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip -o /tmp/protoc.zip && \
