@@ -15,6 +15,9 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"net"
+
+	_ "github.com/lib/pq"
+	_ "golang_restapi/internal/account/migrations"
 )
 
 type App struct {

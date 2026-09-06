@@ -1,7 +1,7 @@
 #Go application Makefile
 APP_NAME ?= account
 BINARY_NAME ?= bin/$(APP_NAME)
-MAIN_PATH ?= ./cmd
+MAIN_PATH ?= ./cmd/account
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 BUILD_TIME ?= $(shell date -u '+$Y-%m-%d_%H:%M:%S')
 LDFLAGS ?= -ldflags "-X main.Version=$(VERSION) -X main.BuildTime=$(BUILD_TIME)"
