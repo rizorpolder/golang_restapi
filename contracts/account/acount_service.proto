@@ -1,11 +1,11 @@
 syntax = "proto3";
 package  account;
-option go_package =  "github.com/rizorpolder/golang_restapi/contracts/account/go;account";
+option go_package =  "golang_restapi/contracts/account/go;account";
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "pagination/pagination.proto";
-import "account/account_model.proto";
+import "account_model.proto";
 
 service Account{
   rpc CreateUser(CreateUserRequest) returns(google.protobuf.Empty){
@@ -70,6 +70,6 @@ message DeleteUserResponse{
 
 message UpdateUserRequest{
   uint64 user_id = 1;
-  User user = 2;
+  UpdateUser user = 2;
 }
 

@@ -1,14 +1,13 @@
-package account
+package repository
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"golang_restapi/internal/account/model"
-	"golang_restapi/internal/repository/account/mapper"
-	repomodel "golang_restapi/internal/repository/account/model"
-
 	"github.com/rs/zerolog"
+	"golang_restapi/internal/account/model"
+	"golang_restapi/internal/account/repository/mapper"
+	"golang_restapi/internal/account/repository/model"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -76,10 +75,10 @@ func (repo *Repository) DeleteUser(ctx context.Context, id uint64) error {
 	return nil
 }
 
-func (repo *Repository) UpdateUser(ctx context.Context, user model.User) error {
+func (repo *Repository) UpdateUser(ctx context.Context, userId uint64, user model.UpdateUser) error {
 	res := repo.db.WithContext(ctx).
 		Model(&repomodel.User{}).
-		Where("id = ?", user.ID).
+		Where("id = ?", userId).
 		Updates(user)
 	if res.Error != nil {
 		repo.logger.Err(res.Error).Msg("failed to update user")

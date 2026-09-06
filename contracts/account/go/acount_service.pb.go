@@ -7,7 +7,7 @@
 package account
 
 import (
-	_go "github.com/rizorpolder/golang_restapi/contracts/pagination/go"
+	_go "golang_restapi/contracts/pagination/go"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -343,7 +343,7 @@ func (x *DeleteUserResponse) GetResult() bool {
 type UpdateUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	User          *User                  `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
+	User          *UpdateUser            `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -385,7 +385,7 @@ func (x *UpdateUserRequest) GetUserId() uint64 {
 	return 0
 }
 
-func (x *UpdateUserRequest) GetUser() *User {
+func (x *UpdateUserRequest) GetUser() *UpdateUser {
 	if x != nil {
 		return x.User
 	}
@@ -396,7 +396,7 @@ var File_acount_service_proto protoreflect.FileDescriptor
 
 const file_acount_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14acount_service.proto\x12\aaccount\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bpagination/pagination.proto\x1a\x1baccount/account_model.proto\"<\n" +
+	"\x14acount_service.proto\x12\aaccount\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bpagination/pagination.proto\x1a\x13account_model.proto\"<\n" +
 	"\x11CreateUserRequest\x12'\n" +
 	"\x04user\x18\x01 \x01(\v2\x13.account.CreateUserR\x04user\")\n" +
 	"\x0eGetUserRequest\x12\x17\n" +
@@ -415,10 +415,10 @@ const file_acount_service_proto_rawDesc = "" +
 	"\x11DeleteUserRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\",\n" +
 	"\x12DeleteUserResponse\x12\x16\n" +
-	"\x06result\x18\x01 \x01(\bR\x06result\"O\n" +
+	"\x06result\x18\x01 \x01(\bR\x06result\"U\n" +
 	"\x11UpdateUserRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\x04R\x06userId\x12!\n" +
-	"\x04user\x18\x02 \x01(\v2\r.account.UserR\x04user2\x96\x04\n" +
+	"\auser_id\x18\x01 \x01(\x04R\x06userId\x12'\n" +
+	"\x04user\x18\x02 \x01(\v2\x13.account.UpdateUserR\x04user2\x96\x04\n" +
 	"\aAccount\x12g\n" +
 	"\n" +
 	"CreateUser\x12\x1a.account.CreateUserRequest\x1a\x16.google.protobuf.Empty\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1aaccount/api/v1/create_user\x12g\n" +
@@ -427,7 +427,7 @@ const file_acount_service_proto_rawDesc = "" +
 	"\n" +
 	"DeleteUser\x12\x1a.account.DeleteUserRequest\x1a\x1b.account.DeleteUserResponse\"&\x82\xd3\xe4\x93\x02 *\x1eaccount/api/v1/users/{user_id}\x12k\n" +
 	"\n" +
-	"UpdateUser\x12\x1a.account.UpdateUserRequest\x1a\x16.google.protobuf.Empty\")\x82\xd3\xe4\x93\x02#:\x01*\x1a\x1eaccount/api/v1/users/{user_id}BDZBgithub.com/rizorpolder/golang_restapi/contracts/account/go;accountb\x06proto3"
+	"UpdateUser\x12\x1a.account.UpdateUserRequest\x1a\x16.google.protobuf.Empty\")\x82\xd3\xe4\x93\x02#:\x01*\x1a\x1eaccount/api/v1/users/{user_id}B-Z+golang_restapi/contracts/account/go;accountb\x06proto3"
 
 var (
 	file_acount_service_proto_rawDescOnce sync.Once
@@ -454,7 +454,8 @@ var file_acount_service_proto_goTypes = []any{
 	(*CreateUser)(nil),         // 8: account.CreateUser
 	(*User)(nil),               // 9: account.User
 	(*_go.Pagination)(nil),     // 10: pagination.Pagination
-	(*emptypb.Empty)(nil),      // 11: google.protobuf.Empty
+	(*UpdateUser)(nil),         // 11: account.UpdateUser
+	(*emptypb.Empty)(nil),      // 12: google.protobuf.Empty
 }
 var file_acount_service_proto_depIdxs = []int32{
 	8,  // 0: account.CreateUserRequest.user:type_name -> account.CreateUser
@@ -462,17 +463,17 @@ var file_acount_service_proto_depIdxs = []int32{
 	10, // 2: account.GetUsersRequest.pagination:type_name -> pagination.Pagination
 	9,  // 3: account.GetUsersResponse.users:type_name -> account.User
 	10, // 4: account.GetUsersResponse.pagination:type_name -> pagination.Pagination
-	9,  // 5: account.UpdateUserRequest.user:type_name -> account.User
+	11, // 5: account.UpdateUserRequest.user:type_name -> account.UpdateUser
 	0,  // 6: account.Account.CreateUser:input_type -> account.CreateUserRequest
 	1,  // 7: account.Account.GetUser:input_type -> account.GetUserRequest
 	3,  // 8: account.Account.GetUsers:input_type -> account.GetUsersRequest
 	5,  // 9: account.Account.DeleteUser:input_type -> account.DeleteUserRequest
 	7,  // 10: account.Account.UpdateUser:input_type -> account.UpdateUserRequest
-	11, // 11: account.Account.CreateUser:output_type -> google.protobuf.Empty
+	12, // 11: account.Account.CreateUser:output_type -> google.protobuf.Empty
 	2,  // 12: account.Account.GetUser:output_type -> account.GetUserResponse
 	4,  // 13: account.Account.GetUsers:output_type -> account.GetUsersResponse
 	6,  // 14: account.Account.DeleteUser:output_type -> account.DeleteUserResponse
-	11, // 15: account.Account.UpdateUser:output_type -> google.protobuf.Empty
+	12, // 15: account.Account.UpdateUser:output_type -> google.protobuf.Empty
 	11, // [11:16] is the sub-list for method output_type
 	6,  // [6:11] is the sub-list for method input_type
 	6,  // [6:6] is the sub-list for extension type_name
@@ -485,7 +486,7 @@ func file_acount_service_proto_init() {
 	if File_acount_service_proto != nil {
 		return
 	}
-	file_account_account_model_proto_init()
+	file_account_model_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

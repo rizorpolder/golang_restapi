@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	goose.AddNamedMigrationContext(upInitdb, downInitdb)
+	goose.AddNamedMigrationContext("20260906103017_initdb.go", upCreateUserTable, downCreateUserTable)
 }
 
 func upCreateUserTable(ctx context.Context, tx *sql.Tx) error {
@@ -31,14 +31,4 @@ func upCreateUserTable(ctx context.Context, tx *sql.Tx) error {
 func downCreateUserTable(ctx context.Context, tx *sql.Tx) error {
 	_, err := tx.Exec(`DROP TABLE IF EXISTS users;`)
 	return err
-}
-
-func upInitdb(ctx context.Context, tx *sql.Tx) error {
-	// This code is executed when the migration is applied.
-	return nil
-}
-
-func downInitdb(ctx context.Context, tx *sql.Tx) error {
-	// This code is executed when the migration is rolled back.
-	return nil
 }

@@ -2,7 +2,7 @@ package mapper
 
 import (
 	"golang_restapi/internal/account/model"
-	repomodel "golang_restapi/internal/repository/account/model"
+	"golang_restapi/internal/account/repository/model"
 )
 
 func UserToRepoUser(user model.User) repomodel.User {
