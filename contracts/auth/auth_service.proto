@@ -1,0 +1,37 @@
+syntax = "proto3";
+package auth;
+option go_package =  "golang_restapi/contracts/auth/go;auth";
+
+import "common/common.proto";
+
+service Auth{
+  rpc Register(RegisterRequest) returns (common.EmptyResponse);
+  rpc Login(LoginRequest) returns (TokenPair);
+  rpc Refresh(RefreshRequest) returns(TokenPair);
+  rpc Validate(ValidateRequest) returns (ValidateResponse);
+  rpc Logout(RefreshRequest) returns(common.EmptyResponse);
+}
+
+message RegisterRequest{
+  string login = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message LoginRequest{
+  string login_or_email = 1;
+  string password = 2;
+}
+message RefreshRequest{
+  string refresh_token = 1;
+}
+message ValidateRequest{
+  string access_token = 1;
+}
+message ValidateResponse{
+  int64 user_id = 1;
+}
+message TokenPair{
+  string access_token = 1;
+  string refresh_token = 2;
+}

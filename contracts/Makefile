@@ -7,4 +7,4 @@ docker-build:
 gen: docker-build
 	docker run --rm -v $(abspath $(PROTO_ROOT)):/app $(DOCKER_IMAGE) bash /app/generate.sh
 clean:
-	find account pagination -type d -name go -exec rm -rf {} \;
+	find account pagination auth -type d -name go -exec rm -rf {} \;

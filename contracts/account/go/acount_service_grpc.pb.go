@@ -11,7 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	api "server/api"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -31,11 +31,11 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountClient interface {
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*GetUsersResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
-	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error)
 }
 
 type accountClient struct {
@@ -46,9 +46,9 @@ func NewAccountClient(cc grpc.ClientConnInterface) AccountClient {
 	return &accountClient{cc}
 }
 
-func (c *accountClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *accountClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(api.EmptyResponse)
 	err := c.cc.Invoke(ctx, Account_CreateUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -86,9 +86,9 @@ func (c *accountClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, o
 	return out, nil
 }
 
-func (c *accountClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *accountClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(api.EmptyResponse)
 	err := c.cc.Invoke(ctx, Account_UpdateUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -100,11 +100,11 @@ func (c *accountClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, o
 // All implementations must embed UnimplementedAccountServer
 // for forward compatibility.
 type AccountServer interface {
-	CreateUser(context.Context, *CreateUserRequest) (*emptypb.Empty, error)
+	CreateUser(context.Context, *CreateUserRequest) (*api.EmptyResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	GetUsers(context.Context, *GetUsersRequest) (*GetUsersResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
-	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*api.EmptyResponse, error)
 	mustEmbedUnimplementedAccountServer()
 }
 
@@ -115,7 +115,7 @@ type AccountServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAccountServer struct{}
 
-func (UnimplementedAccountServer) CreateUser(context.Context, *CreateUserRequest) (*emptypb.Empty, error) {
+func (UnimplementedAccountServer) CreateUser(context.Context, *CreateUserRequest) (*api.EmptyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateUser not implemented")
 }
 func (UnimplementedAccountServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
@@ -127,7 +127,7 @@ func (UnimplementedAccountServer) GetUsers(context.Context, *GetUsersRequest) (*
 func (UnimplementedAccountServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteUser not implemented")
 }
-func (UnimplementedAccountServer) UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error) {
+func (UnimplementedAccountServer) UpdateUser(context.Context, *UpdateUserRequest) (*api.EmptyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateUser not implemented")
 }
 func (UnimplementedAccountServer) mustEmbedUnimplementedAccountServer() {}

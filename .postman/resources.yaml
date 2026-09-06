@@ -1,0 +1,10 @@
+workspace:
+  id: 14e51052-f236-457a-8ae4-6128f0535645
+localResources:
+  specs:
+    - ../contracts/auth/auth_service.proto
+    - ../contracts/account/acount_service.proto
+resourceNameMappings:
+  specs:
+    - ../contracts/auth/auth_service.proto: auth_service.proto
+    - ../contracts/account/acount_service.proto: acount_service.proto

@@ -15,6 +15,10 @@ type Config struct {
 	Loglevel    string `env:"LOG_LEVEL" required:"true" envDefault:"info"`
 
 	DbDns string `env:"DB_DNS" required:"true"`
+
+	JwtSecret             string `env:"JWT_SECRET" json:"jwt_secret" required:"true"`
+	AccessTokenTTLMinutes int    `env:"ACCESS_TOKEN_TTL_MINUTES" json:"access_ttl_min" required:"true" default:"60"`
+	RefreshTokenTTLDays   int    `env:"REFRESH_TOKEN_TTL_DAYS" json:"refresh_ttl_days" required:"true" default:"30"`
 }
 
 func Load() (*Config, error) {

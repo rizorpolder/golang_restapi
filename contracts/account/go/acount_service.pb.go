@@ -11,8 +11,8 @@ import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
+	api "server/api"
 	sync "sync"
 	unsafe "unsafe"
 )
@@ -396,7 +396,7 @@ var File_acount_service_proto protoreflect.FileDescriptor
 
 const file_acount_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14acount_service.proto\x12\aaccount\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bpagination/pagination.proto\x1a\x13account_model.proto\"<\n" +
+	"\x14acount_service.proto\x12\aaccount\x1a\x1cgoogle/api/annotations.proto\x1a\x1bpagination/pagination.proto\x1a\x13account_model.proto\x1a\x13common/common.proto\"<\n" +
 	"\x11CreateUserRequest\x12'\n" +
 	"\x04user\x18\x01 \x01(\v2\x13.account.CreateUserR\x04user\")\n" +
 	"\x0eGetUserRequest\x12\x17\n" +
@@ -418,16 +418,16 @@ const file_acount_service_proto_rawDesc = "" +
 	"\x06result\x18\x01 \x01(\bR\x06result\"U\n" +
 	"\x11UpdateUserRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\x12'\n" +
-	"\x04user\x18\x02 \x01(\v2\x13.account.UpdateUserR\x04user2\x96\x04\n" +
-	"\aAccount\x12g\n" +
+	"\x04user\x18\x02 \x01(\v2\x13.account.UpdateUserR\x04user2\x94\x04\n" +
+	"\aAccount\x12f\n" +
 	"\n" +
-	"CreateUser\x12\x1a.account.CreateUserRequest\x1a\x16.google.protobuf.Empty\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1aaccount/api/v1/create_user\x12g\n" +
+	"CreateUser\x12\x1a.account.CreateUserRequest\x1a\x15.common.EmptyResponse\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1aaccount/api/v1/create_user\x12g\n" +
 	"\aGetUser\x12\x17.account.GetUserRequest\x1a\x18.account.GetUserResponse\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1eaccount/api/v1/users/{user_id}\x12]\n" +
 	"\bGetUsers\x12\x18.account.GetUsersRequest\x1a\x19.account.GetUsersResponse\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14account/api/v1/users\x12m\n" +
 	"\n" +
-	"DeleteUser\x12\x1a.account.DeleteUserRequest\x1a\x1b.account.DeleteUserResponse\"&\x82\xd3\xe4\x93\x02 *\x1eaccount/api/v1/users/{user_id}\x12k\n" +
+	"DeleteUser\x12\x1a.account.DeleteUserRequest\x1a\x1b.account.DeleteUserResponse\"&\x82\xd3\xe4\x93\x02 *\x1eaccount/api/v1/users/{user_id}\x12j\n" +
 	"\n" +
-	"UpdateUser\x12\x1a.account.UpdateUserRequest\x1a\x16.google.protobuf.Empty\")\x82\xd3\xe4\x93\x02#:\x01*\x1a\x1eaccount/api/v1/users/{user_id}B-Z+golang_restapi/contracts/account/go;accountb\x06proto3"
+	"UpdateUser\x12\x1a.account.UpdateUserRequest\x1a\x15.common.EmptyResponse\")\x82\xd3\xe4\x93\x02#:\x01*\x1a\x1eaccount/api/v1/users/{user_id}B-Z+golang_restapi/contracts/account/go;accountb\x06proto3"
 
 var (
 	file_acount_service_proto_rawDescOnce sync.Once
@@ -455,7 +455,7 @@ var file_acount_service_proto_goTypes = []any{
 	(*User)(nil),               // 9: account.User
 	(*_go.Pagination)(nil),     // 10: pagination.Pagination
 	(*UpdateUser)(nil),         // 11: account.UpdateUser
-	(*emptypb.Empty)(nil),      // 12: google.protobuf.Empty
+	(*api.EmptyResponse)(nil),  // 12: common.EmptyResponse
 }
 var file_acount_service_proto_depIdxs = []int32{
 	8,  // 0: account.CreateUserRequest.user:type_name -> account.CreateUser
@@ -469,11 +469,11 @@ var file_acount_service_proto_depIdxs = []int32{
 	3,  // 8: account.Account.GetUsers:input_type -> account.GetUsersRequest
 	5,  // 9: account.Account.DeleteUser:input_type -> account.DeleteUserRequest
 	7,  // 10: account.Account.UpdateUser:input_type -> account.UpdateUserRequest
-	12, // 11: account.Account.CreateUser:output_type -> google.protobuf.Empty
+	12, // 11: account.Account.CreateUser:output_type -> common.EmptyResponse
 	2,  // 12: account.Account.GetUser:output_type -> account.GetUserResponse
 	4,  // 13: account.Account.GetUsers:output_type -> account.GetUsersResponse
 	6,  // 14: account.Account.DeleteUser:output_type -> account.DeleteUserResponse
-	12, // 15: account.Account.UpdateUser:output_type -> google.protobuf.Empty
+	12, // 15: account.Account.UpdateUser:output_type -> common.EmptyResponse
 	11, // [11:16] is the sub-list for method output_type
 	6,  // [6:11] is the sub-list for method input_type
 	6,  // [6:6] is the sub-list for extension type_name

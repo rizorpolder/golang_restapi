@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-for dir in account pagination; do
+for dir in account pagination auth; do
   echo ">> Processing $dir"
   mkdir -p /app/$dir/go
   cd /app/$dir

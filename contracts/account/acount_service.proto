@@ -3,12 +3,12 @@ package  account;
 option go_package =  "golang_restapi/contracts/account/go;account";
 
 import "google/api/annotations.proto";
-import "google/protobuf/empty.proto";
 import "pagination/pagination.proto";
 import "account_model.proto";
+import "common/common.proto";
 
 service Account{
-  rpc CreateUser(CreateUserRequest) returns(google.protobuf.Empty){
+  rpc CreateUser(CreateUserRequest) returns(common.EmptyResponse){
     option(google.api.http) = {
       post:"account/api/v1/create_user",
       body:"*"
@@ -34,7 +34,7 @@ service Account{
     };
   }
 
-  rpc UpdateUser(UpdateUserRequest) returns (google.protobuf.Empty){
+  rpc UpdateUser(UpdateUserRequest) returns (common.EmptyResponse){
     option(google.api.http) = {
       put:"account/api/v1/users/{user_id}",
       body:"*"
