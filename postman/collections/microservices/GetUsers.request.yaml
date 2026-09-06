@@ -1,0 +1,18 @@
+$kind: grpc-request
+url: "{{account}}"
+methodPath: account.Account.GetUsers
+methodDescriptor: CsQECg1hY2NvdW50LnByb3RvEgdhY2NvdW50IkAKD0dldFVzZXJzUmVxdWVzdBItCgpwYWdpbmF0aW9uGAEgASgLMhVwYWdpbmF0aW9uLlBhZ2luYXRpb25CAhABIloKEEdldFVzZXJzUmVzcG9uc2USFwoFdXNlcnMYASADKAsyBFVzZXJCAhABEi0KCnBhZ2luYXRpb24YAiABKAsyFXBhZ2luYXRpb24uUGFnaW5hdGlvbkICEAEijgIKBFVzZXISDgoCaWQYASABKARCAhABEhEKBWxvZ2luGAIgASgJQgIQARIRCgVwaG9uZRgDIAEoCUICEAESFgoKZmlyc3RfbmFtZRgEIAEoCUICEAESFQoJbGFzdF9uYW1lGAUgASgJQgIQARIXCgttaWRkbGVfbmFtZRgGIAEoCUICEAESEQoFZW1haWwYByABKAlCAhABEg8KA2FnZRgIIAEoDUICEAESMQoKY3JlYXRlZF9hdBgJIAEoCzIZZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEICEAESMQoKdXBkYXRlZF9hdBgKIAEoCzIZZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEICEAEyTAoHQWNjb3VudBJBCghHZXRVc2VycxIYLmFjY291bnQuR2V0VXNlcnNSZXF1ZXN0GhkuYWNjb3VudC5HZXRVc2Vyc1Jlc3BvbnNlIgBCLVorZ29sYW5nX3Jlc3RhcGkvY29udHJhY3RzL2FjY291bnQvZ287YWNjb3VudAqIAQoQcGFnaW5hdGlvbi5wcm90bxIKcGFnaW5hdGlvbiIzCgpQYWdpbmF0aW9uEhIKBm9mZnNldBgBIAEoDUICEAESEQoFbGltaXQYAiABKA1CAhABQjNaMWdvbGFuZ19yZXN0YXBpL2NvbnRyYWN0cy9wYWdpbmF0aW9uL2dvO3BhZ2luYXRpb24KXQoVZ29vZ2xlX3Byb3RvYnVmLnByb3RvEg9nb29nbGUucHJvdG9idWYiMwoJVGltZXN0YW1wEhMKB3NlY29uZHMYASABKANCAhABEhEKBW5hbm9zGAIgASgFQgIQAQ==
+message:
+  content: |-
+    {
+        "pagination": {
+            "limit": 10,
+            "offset": 10
+        }
+    }
+settings: {}
+schema:
+  source: file
+  location: /Users/rizorpolder/Documents/GIT/pets/golang_restapi/contracts/account/acount_service.proto
+examples: .resources/GetUsers.resources/examples
+order: 4476998680130699

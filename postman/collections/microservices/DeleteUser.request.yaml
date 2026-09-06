@@ -1,0 +1,15 @@
+$kind: grpc-request
+url: "{{account}}"
+methodPath: account.Account.DeleteUser
+methodDescriptor: Cu8BCg1hY2NvdW50LnByb3RvEgdhY2NvdW50IigKEURlbGV0ZVVzZXJSZXF1ZXN0EhMKB3VzZXJfaWQYASABKARCAhABIigKEkRlbGV0ZVVzZXJSZXNwb25zZRISCgZyZXN1bHQYASABKAhCAhABMlIKB0FjY291bnQSRwoKRGVsZXRlVXNlchIaLmFjY291bnQuRGVsZXRlVXNlclJlcXVlc3QaGy5hY2NvdW50LkRlbGV0ZVVzZXJSZXNwb25zZSIAQi1aK2dvbGFuZ19yZXN0YXBpL2NvbnRyYWN0cy9hY2NvdW50L2dvO2FjY291bnQ=
+message:
+  content: |-
+    {
+        "user_id": "0321027"
+    }
+settings: {}
+schema:
+  source: file
+  location: /Users/rizorpolder/Documents/GIT/pets/golang_restapi/contracts/account/acount_service.proto
+examples: .resources/DeleteUser.resources/examples
+order: 2440305107944970

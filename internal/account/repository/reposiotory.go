@@ -54,10 +54,14 @@ func (repo *Repository) GetUsers(ctx context.Context, limit int, offset int) ([]
 		Offset(offset).
 		Limit(limit).
 		Find(&repoUsers)
-	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-		return nil, fmt.Errorf("users not found")
-	} else if res.Error != nil {
+
+	if res.Error != nil {
 		repo.logger.Err(res.Error).Msg("failed to get repoUsers")
+		return nil, res.Error
+	}
+
+	if len(repoUsers) == 0 {
+		return nil, fmt.Errorf("users not found")
 	}
 
 	return mapper.RepoUsersToUsers(repoUsers), nil

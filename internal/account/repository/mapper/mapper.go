@@ -8,6 +8,7 @@ import (
 func UserToRepoUser(user model.User) repomodel.User {
 	return repomodel.User{
 		ID:         user.ID,
+		Login:      user.Login,
 		Email:      user.Email,
 		Phone:      user.Phone,
 		FirstName:  user.FirstName,
@@ -22,6 +23,7 @@ func UserToRepoUser(user model.User) repomodel.User {
 func RepoUserToUser(user repomodel.User) model.User {
 	return model.User{
 		ID:         user.ID,
+		Login:      user.Login,
 		Email:      user.Email,
 		Phone:      user.Phone,
 		FirstName:  user.FirstName,

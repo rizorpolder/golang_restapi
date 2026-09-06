@@ -1,0 +1,6 @@
+$kind: grpc-request
+url: ""
+methodPath: ""
+settings: {}
+examples: .resources/GetUser.resources/examples
+order: 2316235995047432
