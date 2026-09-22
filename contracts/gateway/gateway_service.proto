@@ -1,0 +1,97 @@
+syntax = "proto3";
+package gateway;
+option go_package = "golang_restapi/contracts/gateway/go;gateway";
+
+import "google/api/annotations.proto";
+import "common/common.proto";
+import "gateway/gateway_model.proto";
+
+service Gateway{
+  rpc Register(RegisterRequest) returns (RegisterResponse){
+    option(google.api.http) = {
+      post:"/api/v1/auth/register",
+      body:"*"
+    };
+  };
+
+  rpc Login(LoginRequest) returns (LoginResponse){
+    option(google.api.http) = {
+      post:"/api/v1/auth/login";
+      body:"*"
+    };
+  };
+
+  rpc Refresh(RefreshRequest) returns (RefreshResponse){
+    option(google.api.http) = {
+      post: "/api/v1/auth/refresh",
+      body:"*"
+    };
+  };
+
+  rpc Logout(LogoutRequest) returns (common.EmptyResponse){
+    option(google.api.http) = {
+      post: "/api/v1/auth/logout",
+      body:"*"
+    };
+  } ;
+
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse){
+    option(google.api.http) = {
+      post: "/api/v1/auth/validate",
+      body:"*"
+    };
+  };
+
+  rpc CreateUser(CreateUserRequest) returns(common.EmptyResponse){
+    option(google.api.http) = {
+      post: "/api/v1/users",
+      body:"*"
+    };
+  }
+
+  rpc GetUser(GetUserRequest) returns (GetUserResponse){
+    option(google.api.http) = {
+      get: "/api/v1/users/{user_id}"
+    };
+  };
+
+  rpc GetCurrentUser(common.EmptyRequest) returns (GetCurrentUserResponse){
+    option(google.api.http) = {
+      get: "/api/v1/users/me",
+    };
+  };
+  rpc GetUsers(GetUsersRequest) returns (GetUserResponse){
+    option(google.api.http) = {
+      get:"/api/v1/users"
+    };
+  };
+
+  rpc UpdateUser(UpdateUserRequest)returns(common.EmptyResponse){
+    option(google.api.http) = {
+      put:"/api/v1/users/{user_id}",
+      body:"*",
+    };
+  };
+
+  rpc UpdateCurrentUser(UpdateCurrentUserRequest) returns (common.EmptyResponse){
+    option(google.api.http) = {
+      put:"/api/v1/users/me",
+      body:"*",
+    };
+  };
+
+  rpc DeleteUser(DeleteUserRequest) returns (common.EmptyResponse){
+    option(google.api.http) = {
+      delete:"/api/v1/users/{user_id}"
+    };
+  };
+
+  rpc DeleteCurrentUser(common.EmptyRequest) returns (common.EmptyResponse){
+    option(google.api.http) = {
+      delete:"/api/v1/users/me"
+    };
+  };
+
+}
+
+

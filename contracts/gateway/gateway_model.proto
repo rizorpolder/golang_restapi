@@ -1,0 +1,80 @@
+syntax = "proto3";
+package gateway;
+
+option go_package = "golang_restapi/contracts/gateway/go;gateway";
+
+import "account/account_model.proto";
+import "auth/auth_service.proto";
+import "pagination/pagination.proto";
+
+
+message RegisterRequest{
+
+  account.User user = 1;
+  string password = 2;
+}
+
+message RegisterResponse{
+  account.User user = 1;
+  auth.TokenPair tokenPair = 2;
+}
+
+message LoginRequest{
+  string login_or_email = 1;
+  string password = 2;
+}
+message LoginResponse{
+  account.User user = 1;
+  auth.TokenPair tokenPair = 2;
+}
+
+message RefreshRequest{
+  string refresh_token = 1;
+}
+message RefreshResponse{
+  auth.TokenPair tokenPair = 1;
+}
+message LogoutRequest{
+  string refresh_token = 1;
+
+}
+message ValidateTokenRequest{
+  string access_token = 1;
+}
+message ValidateTokenResponse{
+  uint64  user_id = 1;
+  bool is_valid = 2;
+}
+message CreateUserRequest{
+  uint64 user_id = 1;
+}
+message GetUserRequest{
+  uint64 user_id = 1;
+
+}
+message GetUserResponse{
+  account.User user = 1;
+}
+message GetUsersRequest{
+  pagination.Pagination pagination = 1;
+}
+
+message GetUsersResponse{
+  repeated account.User users = 1;
+  pagination.Pagination pagination = 2;
+}
+message GetCurrentUserResponse{
+  account.User user = 1;
+
+}
+message UpdateUserRequest{
+  uint64 user_id = 1;
+  account.User user = 2;
+}
+
+message UpdateCurrentUserRequest{
+  account.User user = 1;
+}
+message DeleteUserRequest{
+  uint64 user_id = 1;
+}
