@@ -25,6 +25,7 @@ go.work
 go.work.sum
 
 # env file
+configs/.env
 .env
 
 # Editor/IDE
@@ -32,3 +33,4 @@ go.work.sum
 # .vscode/
 .idea
 bin
+*.env
