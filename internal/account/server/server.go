@@ -4,10 +4,10 @@ import (
 	"context"
 	"github.com/rs/zerolog"
 	accountpb "golang_restapi/contracts/account/go"
+	commonpb "golang_restapi/contracts/common/go"
 	"golang_restapi/internal/account/mapper"
 	"golang_restapi/internal/account/model"
 	"golang_restapi/internal/account/service"
-	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type Server struct {
@@ -28,12 +28,12 @@ type AccountService interface {
 	UpdateUser(context.Context, uint64, model.UpdateUser) error
 }
 
-func (s *Server) CreateUser(ctx context.Context, req *accountpb.CreateUserRequest) (*emptypb.Empty, error) {
+func (s *Server) CreateUser(ctx context.Context, req *accountpb.CreateUserRequest) (*commonpb.EmptyResponse, error) {
 	user := mapper.PbToUserCreate(req.GetUser())
 	if err := s.accountService.CreateUser(ctx, user); err != nil {
 		return nil, err
 	}
-	return &emptypb.Empty{}, nil
+	return &commonpb.EmptyResponse{}, nil
 }
 
 func (s *Server) GetUser(ctx context.Context, req *accountpb.GetUserRequest) (*accountpb.GetUserResponse, error) {
@@ -52,13 +52,13 @@ func (s *Server) GetUsers(ctx context.Context, req *accountpb.GetUsersRequest) (
 	return &accountpb.GetUsersResponse{Users: mapper.UsersToPbs(res)}, nil
 }
 
-func (s *Server) UpdateUser(ctx context.Context, req *accountpb.UpdateUserRequest) (*emptypb.Empty, error) {
+func (s *Server) UpdateUser(ctx context.Context, req *accountpb.UpdateUserRequest) (*commonpb.EmptyResponse, error) {
 	user := mapper.PbToUserUpdate(req.User)
 	err := s.accountService.UpdateUser(ctx, uint64(req.GetUserId()), user)
 	if err != nil {
 		return nil, err
 	}
-	return &emptypb.Empty{}, nil
+	return &commonpb.EmptyResponse{}, nil
 }
 func (s *Server) DeleteUser(ctx context.Context, req *accountpb.DeleteUserRequest) (*accountpb.DeleteUserResponse, error) {
 	err := s.accountService.DeleteUser(ctx, uint64(req.GetUserId()))

@@ -20,6 +20,8 @@ services:
       context: .
       dockerfile: deployments/docker/account/Dockerfile
     env_file: configs/account.env
+    ports:
+      - "50052:50052"
     depends_on:
       postgres:
         condition: service_healthy
@@ -31,6 +33,8 @@ services:
       context: .
       dockerfile: deployments/docker/auth/Dockerfile
     env_file: configs/auth.env
+    ports:
+      - "50051:50051"
     depends_on:
       postgres:
         condition: service_healthy

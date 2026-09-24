@@ -7,11 +7,11 @@
 package auth
 
 import (
+	_go "golang_restapi/contracts/common/go"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
-	api "server/api"
 	sync "sync"
 	unsafe "unsafe"
 )
@@ -367,7 +367,7 @@ var file_auth_service_proto_goTypes = []any{
 	(*ValidateRequest)(nil),   // 3: auth.ValidateRequest
 	(*ValidateResponse)(nil),  // 4: auth.ValidateResponse
 	(*TokenPair)(nil),         // 5: auth.TokenPair
-	(*api.EmptyResponse)(nil), // 6: common.EmptyResponse
+	(*_go.EmptyResponse)(nil), // 6: common.EmptyResponse
 }
 var file_auth_service_proto_depIdxs = []int32{
 	0, // 0: auth.Auth.Register:input_type -> auth.RegisterRequest

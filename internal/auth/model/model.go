@@ -16,6 +16,6 @@ type RefreshToken struct {
 	UserID    uint64
 	Token     string
 	ExpiresAt time.Time
-	RevokedAt *time.Time
+	RevokedAt time.Time
 	CreatedAt time.Time
 }

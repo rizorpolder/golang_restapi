@@ -8,10 +8,10 @@ package gateway
 
 import (
 	context "context"
+	_go "golang_restapi/contracts/common/go"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	api "server/api"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -42,16 +42,16 @@ type GatewayClient interface {
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
-	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error)
+	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
 	ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error)
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
-	GetCurrentUser(ctx context.Context, in *api.EmptyRequest, opts ...grpc.CallOption) (*GetCurrentUserResponse, error)
+	GetCurrentUser(ctx context.Context, in *_go.EmptyRequest, opts ...grpc.CallOption) (*GetCurrentUserResponse, error)
 	GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
-	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error)
-	UpdateCurrentUser(ctx context.Context, in *UpdateCurrentUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error)
-	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error)
-	DeleteCurrentUser(ctx context.Context, in *api.EmptyRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
+	UpdateCurrentUser(ctx context.Context, in *UpdateCurrentUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
+	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
+	DeleteCurrentUser(ctx context.Context, in *_go.EmptyRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
 }
 
 type gatewayClient struct {
@@ -92,9 +92,9 @@ func (c *gatewayClient) Refresh(ctx context.Context, in *RefreshRequest, opts ..
 	return out, nil
 }
 
-func (c *gatewayClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error) {
+func (c *gatewayClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(api.EmptyResponse)
+	out := new(_go.EmptyResponse)
 	err := c.cc.Invoke(ctx, Gateway_Logout_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -112,9 +112,9 @@ func (c *gatewayClient) ValidateToken(ctx context.Context, in *ValidateTokenRequ
 	return out, nil
 }
 
-func (c *gatewayClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error) {
+func (c *gatewayClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(api.EmptyResponse)
+	out := new(_go.EmptyResponse)
 	err := c.cc.Invoke(ctx, Gateway_CreateUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -132,7 +132,7 @@ func (c *gatewayClient) GetUser(ctx context.Context, in *GetUserRequest, opts ..
 	return out, nil
 }
 
-func (c *gatewayClient) GetCurrentUser(ctx context.Context, in *api.EmptyRequest, opts ...grpc.CallOption) (*GetCurrentUserResponse, error) {
+func (c *gatewayClient) GetCurrentUser(ctx context.Context, in *_go.EmptyRequest, opts ...grpc.CallOption) (*GetCurrentUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetCurrentUserResponse)
 	err := c.cc.Invoke(ctx, Gateway_GetCurrentUser_FullMethodName, in, out, cOpts...)
@@ -152,9 +152,9 @@ func (c *gatewayClient) GetUsers(ctx context.Context, in *GetUsersRequest, opts 
 	return out, nil
 }
 
-func (c *gatewayClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error) {
+func (c *gatewayClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(api.EmptyResponse)
+	out := new(_go.EmptyResponse)
 	err := c.cc.Invoke(ctx, Gateway_UpdateUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -162,9 +162,9 @@ func (c *gatewayClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, o
 	return out, nil
 }
 
-func (c *gatewayClient) UpdateCurrentUser(ctx context.Context, in *UpdateCurrentUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error) {
+func (c *gatewayClient) UpdateCurrentUser(ctx context.Context, in *UpdateCurrentUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(api.EmptyResponse)
+	out := new(_go.EmptyResponse)
 	err := c.cc.Invoke(ctx, Gateway_UpdateCurrentUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -172,9 +172,9 @@ func (c *gatewayClient) UpdateCurrentUser(ctx context.Context, in *UpdateCurrent
 	return out, nil
 }
 
-func (c *gatewayClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error) {
+func (c *gatewayClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(api.EmptyResponse)
+	out := new(_go.EmptyResponse)
 	err := c.cc.Invoke(ctx, Gateway_DeleteUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -182,9 +182,9 @@ func (c *gatewayClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, o
 	return out, nil
 }
 
-func (c *gatewayClient) DeleteCurrentUser(ctx context.Context, in *api.EmptyRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error) {
+func (c *gatewayClient) DeleteCurrentUser(ctx context.Context, in *_go.EmptyRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(api.EmptyResponse)
+	out := new(_go.EmptyResponse)
 	err := c.cc.Invoke(ctx, Gateway_DeleteCurrentUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -199,16 +199,16 @@ type GatewayServer interface {
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
-	Logout(context.Context, *LogoutRequest) (*api.EmptyResponse, error)
+	Logout(context.Context, *LogoutRequest) (*_go.EmptyResponse, error)
 	ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error)
-	CreateUser(context.Context, *CreateUserRequest) (*api.EmptyResponse, error)
+	CreateUser(context.Context, *CreateUserRequest) (*_go.EmptyResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
-	GetCurrentUser(context.Context, *api.EmptyRequest) (*GetCurrentUserResponse, error)
+	GetCurrentUser(context.Context, *_go.EmptyRequest) (*GetCurrentUserResponse, error)
 	GetUsers(context.Context, *GetUsersRequest) (*GetUserResponse, error)
-	UpdateUser(context.Context, *UpdateUserRequest) (*api.EmptyResponse, error)
-	UpdateCurrentUser(context.Context, *UpdateCurrentUserRequest) (*api.EmptyResponse, error)
-	DeleteUser(context.Context, *DeleteUserRequest) (*api.EmptyResponse, error)
-	DeleteCurrentUser(context.Context, *api.EmptyRequest) (*api.EmptyResponse, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*_go.EmptyResponse, error)
+	UpdateCurrentUser(context.Context, *UpdateCurrentUserRequest) (*_go.EmptyResponse, error)
+	DeleteUser(context.Context, *DeleteUserRequest) (*_go.EmptyResponse, error)
+	DeleteCurrentUser(context.Context, *_go.EmptyRequest) (*_go.EmptyResponse, error)
 	mustEmbedUnimplementedGatewayServer()
 }
 
@@ -228,34 +228,34 @@ func (UnimplementedGatewayServer) Login(context.Context, *LoginRequest) (*LoginR
 func (UnimplementedGatewayServer) Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Refresh not implemented")
 }
-func (UnimplementedGatewayServer) Logout(context.Context, *LogoutRequest) (*api.EmptyResponse, error) {
+func (UnimplementedGatewayServer) Logout(context.Context, *LogoutRequest) (*_go.EmptyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Logout not implemented")
 }
 func (UnimplementedGatewayServer) ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ValidateToken not implemented")
 }
-func (UnimplementedGatewayServer) CreateUser(context.Context, *CreateUserRequest) (*api.EmptyResponse, error) {
+func (UnimplementedGatewayServer) CreateUser(context.Context, *CreateUserRequest) (*_go.EmptyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateUser not implemented")
 }
 func (UnimplementedGatewayServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedGatewayServer) GetCurrentUser(context.Context, *api.EmptyRequest) (*GetCurrentUserResponse, error) {
+func (UnimplementedGatewayServer) GetCurrentUser(context.Context, *_go.EmptyRequest) (*GetCurrentUserResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetCurrentUser not implemented")
 }
 func (UnimplementedGatewayServer) GetUsers(context.Context, *GetUsersRequest) (*GetUserResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUsers not implemented")
 }
-func (UnimplementedGatewayServer) UpdateUser(context.Context, *UpdateUserRequest) (*api.EmptyResponse, error) {
+func (UnimplementedGatewayServer) UpdateUser(context.Context, *UpdateUserRequest) (*_go.EmptyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateUser not implemented")
 }
-func (UnimplementedGatewayServer) UpdateCurrentUser(context.Context, *UpdateCurrentUserRequest) (*api.EmptyResponse, error) {
+func (UnimplementedGatewayServer) UpdateCurrentUser(context.Context, *UpdateCurrentUserRequest) (*_go.EmptyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateCurrentUser not implemented")
 }
-func (UnimplementedGatewayServer) DeleteUser(context.Context, *DeleteUserRequest) (*api.EmptyResponse, error) {
+func (UnimplementedGatewayServer) DeleteUser(context.Context, *DeleteUserRequest) (*_go.EmptyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteUser not implemented")
 }
-func (UnimplementedGatewayServer) DeleteCurrentUser(context.Context, *api.EmptyRequest) (*api.EmptyResponse, error) {
+func (UnimplementedGatewayServer) DeleteCurrentUser(context.Context, *_go.EmptyRequest) (*_go.EmptyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteCurrentUser not implemented")
 }
 func (UnimplementedGatewayServer) mustEmbedUnimplementedGatewayServer() {}
@@ -406,7 +406,7 @@ func _Gateway_GetUser_Handler(srv interface{}, ctx context.Context, dec func(int
 }
 
 func _Gateway_GetCurrentUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.EmptyRequest)
+	in := new(_go.EmptyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -418,7 +418,7 @@ func _Gateway_GetCurrentUser_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: Gateway_GetCurrentUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GatewayServer).GetCurrentUser(ctx, req.(*api.EmptyRequest))
+		return srv.(GatewayServer).GetCurrentUser(ctx, req.(*_go.EmptyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -496,7 +496,7 @@ func _Gateway_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _Gateway_DeleteCurrentUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.EmptyRequest)
+	in := new(_go.EmptyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -508,7 +508,7 @@ func _Gateway_DeleteCurrentUser_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: Gateway_DeleteCurrentUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GatewayServer).DeleteCurrentUser(ctx, req.(*api.EmptyRequest))
+		return srv.(GatewayServer).DeleteCurrentUser(ctx, req.(*_go.EmptyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

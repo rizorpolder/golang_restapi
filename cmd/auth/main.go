@@ -1,9 +1,9 @@
-package auth
+package main
 
 import (
 	"context"
-	app "golang_restapi/internal/account"
-	"golang_restapi/internal/config"
+	app "golang_restapi/internal/auth"
+	"golang_restapi/internal/auth/config"
 	"golang_restapi/internal/logger"
 )
 
@@ -19,10 +19,11 @@ func main() {
 		panic(err)
 	}
 
-	l := logger.New(cfg)
+	log := logger.New(&cfg.Base)
+	logger.DumpConfig(log, cfg.Redacted())
 
-	application := app.New(&l, cfg)
+	application := app.New(&log, cfg)
 	if err := application.Run(ctx); err != nil {
-		l.Fatal().Err(err).Msg("Application run failed")
+		log.Fatal().Err(err).Msg("Application run failed")
 	}
 }

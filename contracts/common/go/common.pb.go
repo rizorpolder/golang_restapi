@@ -4,7 +4,7 @@
 // 	protoc        v5.27.1
 // source: common.proto
 
-package api
+package common
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -99,8 +99,7 @@ const file_common_proto_rawDesc = "" +
 	"\n" +
 	"\fcommon.proto\x12\x06common\"\x0e\n" +
 	"\fEmptyRequest\"\x0f\n" +
-	"\rEmptyResponseB\fZ\n" +
-	"server/apib\x06proto3"
+	"\rEmptyResponseB+Z)golang_restapi/contracts/common/go;commonb\x06proto3"
 
 var (
 	file_common_proto_rawDescOnce sync.Once

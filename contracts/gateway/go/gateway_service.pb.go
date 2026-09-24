@@ -7,11 +7,11 @@
 package gateway
 
 import (
+	_go "golang_restapi/contracts/common/go"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
-	api "server/api"
 	unsafe "unsafe"
 )
 
@@ -53,7 +53,7 @@ var file_gateway_service_proto_goTypes = []any{
 	(*ValidateTokenRequest)(nil),     // 4: gateway.ValidateTokenRequest
 	(*CreateUserRequest)(nil),        // 5: gateway.CreateUserRequest
 	(*GetUserRequest)(nil),           // 6: gateway.GetUserRequest
-	(*api.EmptyRequest)(nil),         // 7: common.EmptyRequest
+	(*_go.EmptyRequest)(nil),         // 7: common.EmptyRequest
 	(*GetUsersRequest)(nil),          // 8: gateway.GetUsersRequest
 	(*UpdateUserRequest)(nil),        // 9: gateway.UpdateUserRequest
 	(*UpdateCurrentUserRequest)(nil), // 10: gateway.UpdateCurrentUserRequest
@@ -61,7 +61,7 @@ var file_gateway_service_proto_goTypes = []any{
 	(*RegisterResponse)(nil),         // 12: gateway.RegisterResponse
 	(*LoginResponse)(nil),            // 13: gateway.LoginResponse
 	(*RefreshResponse)(nil),          // 14: gateway.RefreshResponse
-	(*api.EmptyResponse)(nil),        // 15: common.EmptyResponse
+	(*_go.EmptyResponse)(nil),        // 15: common.EmptyResponse
 	(*ValidateTokenResponse)(nil),    // 16: gateway.ValidateTokenResponse
 	(*GetUserResponse)(nil),          // 17: gateway.GetUserResponse
 	(*GetCurrentUserResponse)(nil),   // 18: gateway.GetCurrentUserResponse

@@ -67,7 +67,8 @@ func (service *AuthService) Refresh(ctx context.Context, refreshToken string) (p
 	if err != nil {
 		return pbmodel.TokenPair{}, fmt.Errorf("invalid refresh token")
 	}
-	if rt.RevokedAt != nil || time.Now().After(rt.ExpiresAt) {
+	//todo revoked at not null
+	if time.Now().After(rt.ExpiresAt) {
 		return pbmodel.TokenPair{}, fmt.Errorf("refresh token is expired or revoked")
 	}
 	return service.issueTokens(ctx, rt.ID)

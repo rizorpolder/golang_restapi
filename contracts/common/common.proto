@@ -1,6 +1,6 @@
 syntax = "proto3";
 package common;
-option go_package = "server/api";
+option go_package = "golang_restapi/contracts/common/go;common";
 
 message EmptyRequest{}
 message EmptyResponse {}

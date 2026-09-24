@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	app "golang_restapi/internal/auth"
-	"golang_restapi/internal/config"
+	app "golang_restapi/internal/account"
+	"golang_restapi/internal/account/config"
 	"golang_restapi/internal/logger"
 	//_ "golang_restapi/docs"
 	//swaggerFiles "github.com/swaggo/files"
@@ -17,12 +17,15 @@ import (
 // @host localhost:50052
 // @BasePath /
 func main() {
+
+	//TODO исправить порты в  env и в конфигах
 	ctx := context.Background()
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)
 	}
-	l := logger.New(cfg)
+	l := logger.New(&cfg.Base)
+	logger.DumpConfig(l, cfg.Redacted())
 	application := app.New(&l, cfg)
 	if err := application.Run(ctx); err != nil {
 		l.Fatal().Err(err).Msg("application.Run failed")

@@ -7,12 +7,12 @@
 package account
 
 import (
+	_go1 "golang_restapi/contracts/common/go"
 	_go "golang_restapi/contracts/pagination/go"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
-	api "server/api"
 	sync "sync"
 	unsafe "unsafe"
 )
@@ -455,7 +455,7 @@ var file_acount_service_proto_goTypes = []any{
 	(*User)(nil),               // 9: account.User
 	(*_go.Pagination)(nil),     // 10: pagination.Pagination
 	(*UpdateUser)(nil),         // 11: account.UpdateUser
-	(*api.EmptyResponse)(nil),  // 12: common.EmptyResponse
+	(*_go1.EmptyResponse)(nil), // 12: common.EmptyResponse
 }
 var file_acount_service_proto_depIdxs = []int32{
 	8,  // 0: account.CreateUserRequest.user:type_name -> account.CreateUser

@@ -8,10 +8,10 @@ package auth
 
 import (
 	context "context"
+	_go "golang_restapi/contracts/common/go"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	api "server/api"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -31,11 +31,11 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthClient interface {
-	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error)
+	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*TokenPair, error)
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*TokenPair, error)
 	ValidateToken(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
-	Logout(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error)
+	Logout(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
 }
 
 type authClient struct {
@@ -46,9 +46,9 @@ func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 	return &authClient{cc}
 }
 
-func (c *authClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error) {
+func (c *authClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(api.EmptyResponse)
+	out := new(_go.EmptyResponse)
 	err := c.cc.Invoke(ctx, Auth_Register_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -86,9 +86,9 @@ func (c *authClient) ValidateToken(ctx context.Context, in *ValidateRequest, opt
 	return out, nil
 }
 
-func (c *authClient) Logout(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*api.EmptyResponse, error) {
+func (c *authClient) Logout(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(api.EmptyResponse)
+	out := new(_go.EmptyResponse)
 	err := c.cc.Invoke(ctx, Auth_Logout_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -100,11 +100,11 @@ func (c *authClient) Logout(ctx context.Context, in *RefreshRequest, opts ...grp
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility.
 type AuthServer interface {
-	Register(context.Context, *RegisterRequest) (*api.EmptyResponse, error)
+	Register(context.Context, *RegisterRequest) (*_go.EmptyResponse, error)
 	Login(context.Context, *LoginRequest) (*TokenPair, error)
 	Refresh(context.Context, *RefreshRequest) (*TokenPair, error)
 	ValidateToken(context.Context, *ValidateRequest) (*ValidateResponse, error)
-	Logout(context.Context, *RefreshRequest) (*api.EmptyResponse, error)
+	Logout(context.Context, *RefreshRequest) (*_go.EmptyResponse, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -115,7 +115,7 @@ type AuthServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAuthServer struct{}
 
-func (UnimplementedAuthServer) Register(context.Context, *RegisterRequest) (*api.EmptyResponse, error) {
+func (UnimplementedAuthServer) Register(context.Context, *RegisterRequest) (*_go.EmptyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedAuthServer) Login(context.Context, *LoginRequest) (*TokenPair, error) {
@@ -127,7 +127,7 @@ func (UnimplementedAuthServer) Refresh(context.Context, *RefreshRequest) (*Token
 func (UnimplementedAuthServer) ValidateToken(context.Context, *ValidateRequest) (*ValidateResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ValidateToken not implemented")
 }
-func (UnimplementedAuthServer) Logout(context.Context, *RefreshRequest) (*api.EmptyResponse, error) {
+func (UnimplementedAuthServer) Logout(context.Context, *RefreshRequest) (*_go.EmptyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Logout not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
