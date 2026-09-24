@@ -7,6 +7,7 @@
 package auth
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -322,7 +323,7 @@ var File_auth_service_proto protoreflect.FileDescriptor
 
 const file_auth_service_proto_rawDesc = "" +
 	"\n" +
-	"\x12auth_service.proto\x12\x04auth\x1a\x13common/common.proto\"Y\n" +
+	"\x12auth_service.proto\x12\x04auth\x1a\x13common/common.proto\x1a\x1cgoogle/api/annotations.proto\"Y\n" +
 	"\x0fRegisterRequest\x12\x14\n" +
 	"\x05login\x18\x01 \x01(\tR\x05login\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
@@ -338,13 +339,13 @@ const file_auth_service_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\"S\n" +
 	"\tTokenPair\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken2\x92\x02\n" +
-	"\x04Auth\x128\n" +
-	"\bRegister\x12\x15.auth.RegisterRequest\x1a\x15.common.EmptyResponse\x12,\n" +
-	"\x05Login\x12\x12.auth.LoginRequest\x1a\x0f.auth.TokenPair\x120\n" +
-	"\aRefresh\x12\x14.auth.RefreshRequest\x1a\x0f.auth.TokenPair\x129\n" +
-	"\bValidate\x12\x15.auth.ValidateRequest\x1a\x16.auth.ValidateResponse\x125\n" +
-	"\x06Logout\x12\x14.auth.RefreshRequest\x1a\x15.common.EmptyResponseB'Z%golang_restapi/contracts/auth/go;authb\x06proto3"
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken2\xbb\x03\n" +
+	"\x04Auth\x12Z\n" +
+	"\bRegister\x12\x15.auth.RegisterRequest\x1a\x15.common.EmptyResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/v1/auth/register\x12K\n" +
+	"\x05Login\x12\x12.auth.LoginRequest\x1a\x0f.auth.TokenPair\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/v1/auth/login\x12Q\n" +
+	"\aRefresh\x12\x14.auth.RefreshRequest\x1a\x0f.auth.TokenPair\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/api/v1/auth/refresh\x12`\n" +
+	"\rValidateToken\x12\x15.auth.ValidateRequest\x1a\x16.auth.ValidateResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/v1/auth/validate\x12U\n" +
+	"\x06Logout\x12\x14.auth.RefreshRequest\x1a\x15.common.EmptyResponse\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/api/v1/auth/logoutB'Z%golang_restapi/contracts/auth/go;authb\x06proto3"
 
 var (
 	file_auth_service_proto_rawDescOnce sync.Once
@@ -372,12 +373,12 @@ var file_auth_service_proto_depIdxs = []int32{
 	0, // 0: auth.Auth.Register:input_type -> auth.RegisterRequest
 	1, // 1: auth.Auth.Login:input_type -> auth.LoginRequest
 	2, // 2: auth.Auth.Refresh:input_type -> auth.RefreshRequest
-	3, // 3: auth.Auth.Validate:input_type -> auth.ValidateRequest
+	3, // 3: auth.Auth.ValidateToken:input_type -> auth.ValidateRequest
 	2, // 4: auth.Auth.Logout:input_type -> auth.RefreshRequest
 	6, // 5: auth.Auth.Register:output_type -> common.EmptyResponse
 	5, // 6: auth.Auth.Login:output_type -> auth.TokenPair
 	5, // 7: auth.Auth.Refresh:output_type -> auth.TokenPair
-	4, // 8: auth.Auth.Validate:output_type -> auth.ValidateResponse
+	4, // 8: auth.Auth.ValidateToken:output_type -> auth.ValidateResponse
 	6, // 9: auth.Auth.Logout:output_type -> common.EmptyResponse
 	5, // [5:10] is the sub-list for method output_type
 	0, // [0:5] is the sub-list for method input_type

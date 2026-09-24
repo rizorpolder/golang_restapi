@@ -1,15 +1,43 @@
 syntax = "proto3";
 package auth;
-option go_package =  "golang_restapi/contracts/auth/go;auth";
+option go_package = "golang_restapi/contracts/auth/go;auth";
 
 import "common/common.proto";
+import "google/api/annotations.proto";
 
 service Auth{
-  rpc Register(RegisterRequest) returns (common.EmptyResponse);
-  rpc Login(LoginRequest) returns (TokenPair);
-  rpc Refresh(RefreshRequest) returns(TokenPair);
-  rpc Validate(ValidateRequest) returns (ValidateResponse);
-  rpc Logout(RefreshRequest) returns(common.EmptyResponse);
+  rpc Register(RegisterRequest) returns (common.EmptyResponse){
+    option(google.api.http) = {
+      post:"/api/v1/auth/register",
+      body:"*"
+    };
+  };
+  rpc Login(LoginRequest) returns (TokenPair){
+    option(google.api.http) = {
+      post:"/api/v1/auth/login",
+      body:"*",
+    };
+  };
+
+  rpc Refresh(RefreshRequest) returns(TokenPair){
+    option(google.api.http) = {
+      post: "/api/v1/auth/refresh",
+      body:"*"
+    };
+  };
+  rpc ValidateToken(ValidateRequest) returns (ValidateResponse){
+    option(google.api.http) = {
+      post: "/api/v1/auth/validate",
+      body:"*"
+    };
+  };
+  rpc Logout(RefreshRequest) returns(common.EmptyResponse){
+
+    option(google.api.http) = {
+      post: "/api/v1/auth/logout",
+      body:"*"
+    };
+  };
 }
 
 message RegisterRequest{

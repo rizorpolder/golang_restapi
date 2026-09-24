@@ -7,10 +7,10 @@ import (
 	"github.com/pressly/goose/v3"
 	"github.com/rs/zerolog"
 	accountpb "golang_restapi/contracts/account/go"
+	"golang_restapi/internal/account/config"
 	"golang_restapi/internal/account/repository"
 	"golang_restapi/internal/account/server"
 	"golang_restapi/internal/account/service"
-	"golang_restapi/internal/config"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -77,7 +77,7 @@ func (a *App) getRepository(ctx context.Context) (*repository.Repository, error)
 		}
 	}
 
-	db, err := gorm.Open(postgres.Open(a.cfg.DbDns), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(a.cfg.DBDSN), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to db: %w", err)
 	}
@@ -89,7 +89,7 @@ func (a *App) runMigrations(ctx context.Context) error {
 	if err := goose.SetDialect("postgres"); err != nil {
 		return fmt.Errorf("failed to set postgres dialect: %w", err)
 	}
-	dbGoose, err := sql.Open("postgres", a.cfg.DbDns)
+	dbGoose, err := sql.Open("postgres", a.cfg.DBDSN)
 	if err != nil {
 		return fmt.Errorf("failed to connect to db: %w", err)
 	}

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	app "golang_restapi/internal/account"
+	app "golang_restapi/internal/auth"
 	"golang_restapi/internal/config"
 	"golang_restapi/internal/logger"
 	//_ "golang_restapi/docs"
@@ -14,7 +14,7 @@ import (
 // @title Account Service
 // @version 1.0
 // @description Account Service
-// @host localhost:8080
+// @host localhost:50052
 // @BasePath /
 func main() {
 	ctx := context.Background()

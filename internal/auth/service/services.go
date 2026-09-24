@@ -9,15 +9,15 @@ import (
 	"github.com/rs/zerolog"
 	"golang.org/x/crypto/bcrypt"
 	pbmodel "golang_restapi/contracts/auth/go"
+	"golang_restapi/internal/auth/config"
 	"golang_restapi/internal/auth/model"
 	"golang_restapi/internal/auth/repository"
-	"golang_restapi/internal/config"
 	"time"
 )
 
 type AuthService struct {
-	repository *repository.Repository
-	cfg        config.Config
+	repository repository.Repository
+	cfg        *config.Config
 	logger     *zerolog.Logger
 }
 
@@ -30,7 +30,7 @@ type Repository interface {
 	RevokeRefreshToken(ctx context.Context, token string, refreshToken string) error
 }
 
-func New(repo *repository.Repository, cfg config.Config, logger *zerolog.Logger) *AuthService {
+func New(repo repository.Repository, cfg *config.Config, logger *zerolog.Logger) *AuthService {
 	return &AuthService{repository: repo, cfg: cfg, logger: logger}
 }
 
@@ -76,7 +76,7 @@ func (service *AuthService) Refresh(ctx context.Context, refreshToken string) (p
 func (service *AuthService) Validate(ctx context.Context, accessToken string) (uint64, error) {
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(service.cfg.JwtSecret), nil
+		return []byte(service.cfg.JWTSecret), nil
 	})
 	if err != nil {
 		return 0, fmt.Errorf("invalid token")
@@ -101,11 +101,11 @@ func (service *AuthService) issueTokens(ctx context.Context, userID uint64) (pbm
 		"exp": accessExp.Unix(),
 	}
 	access := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	accessStr, err := access.SignedString([]byte(service.cfg.JwtSecret))
+	accessStr, err := access.SignedString([]byte(service.cfg.JWTSecret))
 	if err != nil {
 		return pbmodel.TokenPair{}, fmt.Errorf("could not sign access token: %w", err)
 	}
-	refreshRaw := fmt.Sprintf("%d:%d:%d", userID, now.UnixNano(), service.cfg.JwtSecret)
+	refreshRaw := fmt.Sprintf("%d:%d:%d", userID, now.UnixNano(), service.cfg.JWTSecret)
 	h := sha256.Sum256([]byte(refreshRaw))
 	refreshStr := hex.EncodeToString(h[:])
 	refresh := model.RefreshToken{
