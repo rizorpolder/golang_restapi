@@ -26,3 +26,6 @@ func NewApp(logger *zerolog.Logger, cfg *config.Config) *App {
 		logger: logger,
 	}
 }
+
+///todo обвязал gateway сервис на интерфейсы, нужн проверить расхождения в методах (в самих сервисах)
+///дописать app.go
