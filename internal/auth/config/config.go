@@ -11,6 +11,8 @@ type Config struct {
 	JWTSecret             string `env:"JWT_SECRET,required"`
 	AccessTokenTTLMinutes int    `env:"ACCESS_TOKEN_TTL_MINUTES" envDefault:"60"`
 	RefreshTokenTTLDays   int    `env:"REFRESH_TOKEN_TTL_DAYS" envDefault:"30"`
+	GRPCHost              string `env:"GRPC_HOST" envDefault:"0.0.0.0"`
+	GRPCPort              string `env:"GRPC_PORT" envDefault:"50051"`
 }
 
 func Load() (*Config, error) {

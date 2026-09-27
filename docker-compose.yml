@@ -1,17 +1,56 @@
 services:
-  postgres:
-    image: postgres:18
-    env_file: configs/postgres.env
+  # ===== Postgres: по одной БД на сервис =====
+  auth-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
     ports:
-      - "5432:5432"
+      - "5432:5432"   # для запуска сервиса с мака
     volumes:
-      - postgres_data:/var/lib/postgresql
-      - ./deployments/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - auth-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER}" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d auth_db" ]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+    networks:
+      - app-network
+
+  account-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: account_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD}
+    ports:
+      - "5433:5432"   # снаружи 5433, внутри контейнера 5432
+    volumes:
+      - account-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d account_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+
+  # ===== Сервисы =====
+  # env_file — базовый конфиг сервиса, environment — только то, что в docker отличается
+  auth:
+    build:
+      context: .
+      dockerfile: deployments/docker/auth/Dockerfile
+    env_file: configs/auth.env
+    environment:
+      DB_DSN: host=auth-db port=5432 user=postgres password=${AUTH_DB_PASSWORD} dbname=auth_db sslmode=disable
+      JWT_SECRET: ${JWT_SECRET}
+    ports:
+      - "50051:50051"
+    depends_on:
+      auth-db:
+        condition: service_healthy
     networks:
       - app-network
 
@@ -20,42 +59,36 @@ services:
       context: .
       dockerfile: deployments/docker/account/Dockerfile
     env_file: configs/account.env
+    environment:
+      DB_DSN: host=account-db port=5432 user=postgres password=${ACCOUNT_DB_PASSWORD} dbname=account_db sslmode=disable
     ports:
       - "50052:50052"
     depends_on:
-      postgres:
+      account-db:
         condition: service_healthy
     networks:
       - app-network
 
-  auth:
-    build:
-      context: .
-      dockerfile: deployments/docker/auth/Dockerfile
-    env_file: configs/auth.env
-    ports:
-      - "50051:50051"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - app-network
 
-  gateway:
-    build:
-      context: .
-      dockerfile: deployments/docker/gateway/Dockerfile
-    env_file: configs/gateway.env
-    ports:
-      - "9000:9000"
-    depends_on:
-      - account
-      - auth
-    networks:
-      - app-network
+#  gateway:
+#    build:
+#      context: .
+#      dockerfile: deployments/docker/gateway/Dockerfile
+#    env_file: configs/gateway.env
+#    environment:
+#      AUTH_ADDR: auth:50051
+#      ACCOUNT_ADDR: account:50052
+#    ports:
+#      - "9000:9000"
+#    depends_on:
+#      - account
+#      - auth
+#    networks:
+#      - app-network
 
 volumes:
-  postgres_data:
+  auth-db-data:
+  account-db-data:
 
 networks:
   app-network:

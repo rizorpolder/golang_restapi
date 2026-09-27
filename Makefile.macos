@@ -4,7 +4,7 @@ SERVICES := $(notdir $(patsubst %/main.go,%,$(wildcard cmd/*/main.go)))
 
 BIN_DIR    ?= bin
 CONFIG_DIR ?= configs
-VERSION    ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
+VERSION    ?= $(shell git describe --docktags --always --dirty 2>/dev/null || echo "dev")
 BUILD_TIME ?= $(shell date -u '+%Y-%m-%dT%H:%M:%SZ')
 LDFLAGS    ?= -ldflags "-X main.Version=$(VERSION) -X main.BuildTime=$(BUILD_TIME)"
 
@@ -12,6 +12,10 @@ LDFLAGS    ?= -ldflags "-X main.Version=$(VERSION) -X main.BuildTime=$(BUILD_TIM
 GOFILES ?= $(shell find . -name "*.go" -type f \
 	-not -path "./vendor/*" -not -path "./.git/*" \
 	-not -name "*.pb.go" -not -name "*.pb.gw.go")
+
+# все сервисы из docker-compose.yml с суффиксом -db (auth-db, account-db, ...)
+DB_SERVICES := $(shell docker compose config --services 2>/dev/null | grep -- '-db$$')
+
 
 # env-файл для локального запуска: configs/<svc>.local.env, если есть, иначе configs/<svc>.env
 env_file = $(if $(wildcard $(CONFIG_DIR)/$(1).local.env),$(CONFIG_DIR)/$(1).local.env,$(CONFIG_DIR)/$(1).env)
@@ -133,6 +137,15 @@ docs:
 	godoc -http=:6060
 
 # ---------- Workflows ----------
+
+## db-up            - поднять БД всех сервисов и дождаться healthcheck
+db-up:
+	docker compose up -d --wait $(DB_SERVICES)
+
+## db-down          - остановить БД (данные сохраняются)
+db-down:
+	docker compose stop $(DB_SERVICES)
+
 
 ## dev              - fmt + lint + test + build
 dev: fmt lint test build

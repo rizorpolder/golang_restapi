@@ -4,22 +4,29 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"net"
+
 	"github.com/pressly/goose/v3"
 	"github.com/rs/zerolog"
+	"google.golang.org/grpc"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+
 	authpb "golang_restapi/contracts/auth/go"
 	"golang_restapi/internal/auth/config"
 	"golang_restapi/internal/auth/repository"
 	"golang_restapi/internal/auth/server"
 	"golang_restapi/internal/auth/service"
-	"google.golang.org/grpc"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"net"
+
+	_ "github.com/lib/pq"
+	_ "golang_restapi/internal/auth/migrations"
 )
+
+const migrationsDir = "internal/auth/migrations"
 
 type App struct {
 	cfg         *config.Config
-	l           *zerolog.Logger
+	logger      *zerolog.Logger
 	authRepo    *repository.Repository
 	authService *service.AuthService
 	authServer  *server.Server
@@ -28,8 +35,8 @@ type App struct {
 
 func New(logger *zerolog.Logger, cfg *config.Config) *App {
 	return &App{
-		cfg: cfg,
-		l:   logger,
+		cfg:    cfg,
+		logger: logger,
 	}
 }
 
@@ -39,38 +46,42 @@ func (a *App) Run(ctx context.Context) error {
 		return fmt.Errorf("failed to get auth server: %w", err)
 	}
 	a.grpcServer = getGRPCServer(authServer)
-	listenAddr := fmt.Sprintf("%s:%s", a.cfg.Host, a.cfg.Port)
+
+	listenAddr := net.JoinHostPort(a.cfg.GRPCHost, a.cfg.GRPCPort)
 	lis, err := net.Listen("tcp", listenAddr)
 	if err != nil {
-		a.l.Fatal().Err(err).Msgf("failed to listen on %s:%v", listenAddr, err)
+		a.logger.Fatal().Err(err).Msgf("Failed to listen on %s: %v", listenAddr, err)
 		return err
 	}
-	a.l.Info().Msgf("listening on %s:%v", listenAddr, a.cfg.Port)
+	a.logger.Info().Msgf("gRPC server listening on %s", listenAddr)
+
 	serveErrCh := make(chan error, 1)
 	go func() {
 		serveErrCh <- a.grpcServer.Serve(lis)
 	}()
+
 	select {
 	case <-ctx.Done():
-		a.Close(ctx)
+		if err := a.Close(ctx); err != nil {
+			a.logger.Error().Err(err).Msg("failed to close app")
+		}
 		return ctx.Err()
 
 	case err := <-serveErrCh:
 		if err != nil {
-			a.l.Error().Err(err).Msgf("failed to serve: %v", err)
+			a.logger.Error().Err(err).Msg("gRPC server failed")
 		}
 		return err
-
 	}
 }
 
 func (a *App) getAuthServer(ctx context.Context) (*server.Server, error) {
 	if a.authServer == nil {
-		service, err := a.getAuthService(ctx)
+		svc, err := a.getAuthService(ctx)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get auth server: %w", err)
+			return nil, fmt.Errorf("failed to get auth service: %w", err)
 		}
-		a.authServer = server.New(*service, a.l)
+		a.authServer = server.New(*svc, a.logger)
 	}
 	return a.authServer, nil
 }
@@ -81,8 +92,7 @@ func (a *App) getAuthService(ctx context.Context) (*service.AuthService, error) 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get repository: %w", err)
 		}
-		a.authService = service.New(*repo, a.cfg, a.l)
-
+		a.authService = service.New(*repo, a.cfg, a.logger)
 	}
 	return a.authService, nil
 }
@@ -98,7 +108,7 @@ func (a *App) getRepository(ctx context.Context) (*repository.Repository, error)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
-	a.authRepo = repository.NewRepository(db, a.l)
+	a.authRepo = repository.NewRepository(db, a.logger)
 	return a.authRepo, nil
 }
 
@@ -108,11 +118,12 @@ func (a *App) runMigrations(ctx context.Context) error {
 	}
 	dbGoose, err := sql.Open("postgres", a.cfg.DBDSN)
 	if err != nil {
-		return fmt.Errorf("failed to connect to database: %w", err)
+		return fmt.Errorf("failed to connect to db: %w", err)
 	}
-	if err := goose.UpContext(ctx, dbGoose, "internal/auth/migrations"); err != nil {
+	if err := goose.UpContext(ctx, dbGoose, migrationsDir); err != nil {
 		return fmt.Errorf("failed to run migrations: %w", err)
 	}
+
 	return nil
 }
 
@@ -122,7 +133,7 @@ func getGRPCServer(authServer *server.Server) *grpc.Server {
 	return grpcServer
 }
 
-func (a *App) Close(ctx context.Context) error {
+func (a *App) Close(_ context.Context) error {
 	if a.grpcServer != nil {
 		a.grpcServer.GracefulStop()
 	}

@@ -33,7 +33,7 @@ func RepoTokenToToken(repoToken rpmodel.RefreshToken) model.RefreshToken {
 		UserID:    repoToken.UserID,
 		Token:     repoToken.Token,
 		ExpiresAt: repoToken.ExpiresAt,
-		RevokedAt: repoToken.RevokedAt,
+		RevokedAt: &repoToken.RevokedAt,
 		CreatedAt: repoToken.CreatedAt,
 	}
 }
@@ -43,7 +43,7 @@ func TokenToRepoToken(token model.RefreshToken) rpmodel.RefreshToken {
 		UserID:    token.UserID,
 		Token:     token.Token,
 		ExpiresAt: token.ExpiresAt,
-		RevokedAt: token.RevokedAt,
+		RevokedAt: *token.RevokedAt,
 		CreatedAt: token.CreatedAt,
 	}
 }

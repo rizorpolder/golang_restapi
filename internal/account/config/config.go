@@ -9,7 +9,7 @@ type Config struct {
 	config.Base
 	DBDSN    string `env:"DB_DSN,required"`
 	GRPCHost string `env:"GRPC_HOST" envDefault:"0.0.0.0"`
-	GRPCPort string `env:"GRPC_PORT" envDefault:"50051"`
+	GRPCPort string `env:"GRPC_PORT" envDefault:"50052"`
 }
 
 func Load() (*Config, error) {

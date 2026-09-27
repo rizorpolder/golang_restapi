@@ -20,9 +20,11 @@ import (
 	_ "golang_restapi/internal/account/migrations"
 )
 
+const migrationsDir = "internal/account/migrations"
+
 type App struct {
 	cfg            *config.Config
-	l              *zerolog.Logger
+	logger         *zerolog.Logger
 	accountRepo    *repository.Repository
 	accountService *service.AccountService
 	accountServer  *server.Server
@@ -31,8 +33,8 @@ type App struct {
 
 func New(logger *zerolog.Logger, cfg *config.Config) *App {
 	return &App{
-		cfg: cfg,
-		l:   logger,
+		cfg:    cfg,
+		logger: logger,
 	}
 }
 
@@ -43,15 +45,15 @@ func (a *App) Run(ctx context.Context) error {
 	}
 	a.grpcServer = getGRPCServer(accountServer)
 
-	listenAddr := fmt.Sprintf("%s:%s", a.cfg.Host, a.cfg.Port)
+	listenAddr := net.JoinHostPort(a.cfg.GRPCHost, a.cfg.GRPCPort)
 
 	lis, err := net.Listen("tcp", listenAddr)
 	if err != nil {
-		a.l.Fatal().Err(err).Msgf("Failed to listen on %s: %v", listenAddr, err)
+		a.logger.Fatal().Err(err).Msgf("Failed to listen on %s: %v", listenAddr, err)
 		return err
 	}
 
-	a.l.Info().Msgf("gRPC servcer listening on %v", listenAddr)
+	a.logger.Info().Msgf("gRPC servcer listening on %v", listenAddr)
 
 	serveErrCh := make(chan error, 1)
 	go func() {
@@ -64,7 +66,7 @@ func (a *App) Run(ctx context.Context) error {
 
 	case err := <-serveErrCh:
 		if err != nil {
-			a.l.Error().Err(err).Msgf("Fail to serve: %v", err)
+			a.logger.Error().Err(err).Msgf("Fail to serve: %v", err)
 		}
 		return err
 	}
@@ -81,7 +83,7 @@ func (a *App) getRepository(ctx context.Context) (*repository.Repository, error)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to db: %w", err)
 	}
-	a.accountRepo = repository.NewRepository(db, a.l)
+	a.accountRepo = repository.NewRepository(db, a.logger)
 	return a.accountRepo, nil
 }
 
@@ -93,7 +95,7 @@ func (a *App) runMigrations(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to connect to db: %w", err)
 	}
-	if err := goose.UpContext(ctx, dbGoose, "internal/account/migrations"); err != nil {
+	if err := goose.UpContext(ctx, dbGoose, migrationsDir); err != nil {
 		return fmt.Errorf("failed to run migrations: %w", err)
 	}
 
@@ -105,18 +107,18 @@ func (a *App) getAccountService(ctx context.Context) (*service.AccountService, e
 		if err != nil {
 			return nil, fmt.Errorf("failed to get repository: %w", err)
 		}
-		a.accountService = service.New(*repo, a.l)
+		a.accountService = service.New(*repo, a.logger)
 	}
 	return a.accountService, nil
 }
 
 func (a *App) getAccountServer(ctx context.Context) (*server.Server, error) {
 	if a.accountServer == nil {
-		service, err := a.getAccountService(ctx)
+		svc, err := a.getAccountService(ctx)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get account server: %w", err)
 		}
-		a.accountServer = server.New(*service, a.l)
+		a.accountServer = server.New(*svc, a.logger)
 	}
 	return a.accountServer, nil
 }

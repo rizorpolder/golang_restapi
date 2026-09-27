@@ -18,7 +18,6 @@ import (
 // @BasePath /
 func main() {
 
-	//TODO исправить порты в  env и в конфигах
 	ctx := context.Background()
 	cfg, err := config.Load()
 	if err != nil {
