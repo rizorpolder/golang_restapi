@@ -12,14 +12,14 @@ service Auth{
       body:"*"
     };
   };
-  rpc Login(LoginRequest) returns (TokenPair){
+  rpc Login(LoginRequest) returns (LoginResponse){
     option(google.api.http) = {
       post:"/api/v1/auth/login",
       body:"*",
     };
   };
 
-  rpc Refresh(RefreshRequest) returns(TokenPair){
+  rpc Refresh(RefreshRequest) returns(RefreshResponse){
     option(google.api.http) = {
       post: "/api/v1/auth/refresh",
       body:"*"
@@ -31,7 +31,7 @@ service Auth{
       body:"*"
     };
   };
-  rpc Logout(RefreshRequest) returns(common.EmptyResponse){
+  rpc Logout(LogoutRequest) returns(common.EmptyResponse){
 
     option(google.api.http) = {
       post: "/api/v1/auth/logout",
@@ -50,14 +50,25 @@ message LoginRequest{
   string login_or_email = 1;
   string password = 2;
 }
+
+message LoginResponse{
+  TokenPair tokenPair = 1;
+  uint64 userID = 2;
+}
+message LogoutRequest{
+  string refreshToken = 1;
+}
 message RefreshRequest{
   string refresh_token = 1;
+}
+message RefreshResponse{
+  TokenPair tokenPair = 1;
 }
 message ValidateRequest{
   string access_token = 1;
 }
 message ValidateResponse{
-  int64 user_id = 1;
+  uint64 user_id = 1;
 }
 message TokenPair{
   string access_token = 1;

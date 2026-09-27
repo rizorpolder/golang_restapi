@@ -1,9 +1,11 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"github.com/caarlos0/env/v10"
 	"github.com/joho/godotenv"
+	"io/fs"
 )
 
 type Base struct {
@@ -13,8 +15,10 @@ type Base struct {
 }
 
 func Load[T any](envFile string) (*T, error) {
-	if err := godotenv.Load(envFile); err != nil {
-		fmt.Printf("Error loading .env file: %v\n", err)
+	for _, f := range []string{envFile, ".env"} {
+		if err := godotenv.Load(f); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return nil, fmt.Errorf("load %s: %w", f, err)
+		}
 	}
 
 	cfg := new(T)

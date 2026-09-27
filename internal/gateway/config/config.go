@@ -15,7 +15,7 @@ type Config struct {
 func Load() (*Config, error) {
 	path := os.Getenv("ENV_FILE")
 	if path == "" {
-		path = "/configs/gateway.env"
+		path = "configs/gateway.env"
 	}
 	return config.Load[Config](path)
 }
