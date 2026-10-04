@@ -70,21 +70,21 @@ services:
       - app-network
 
 
-#  gateway:
-#    build:
-#      context: .
-#      dockerfile: deployments/docker/gateway/Dockerfile
-#    env_file: configs/gateway.env
-#    environment:
-#      AUTH_ADDR: auth:50051
-#      ACCOUNT_ADDR: account:50052
-#    ports:
-#      - "9000:9000"
-#    depends_on:
-#      - account
-#      - auth
-#    networks:
-#      - app-network
+  gateway:
+    build:
+      context: .
+      dockerfile: deployments/docker/gateway/Dockerfile
+    env_file: configs/gateway.env
+    environment:
+      AUTH_ADDR: auth:50051
+      ACCOUNT_ADDR: account:50052
+    ports:
+      - "9000:9000"
+    depends_on:
+      - account
+      - auth
+    networks:
+      - app-network
 
 volumes:
   auth-db-data:

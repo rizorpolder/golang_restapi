@@ -18,7 +18,7 @@ func (s *GatewayService) CreateUser(ctx context.Context, newUser model.CreateUse
 	return nil
 }
 
-func (s *GatewayService) GetUsers(ctx context.Context, limit int, offset int) ([]model.User, error) {
+func (s *GatewayService) GetUsers(ctx context.Context, limit uint32, offset uint32) ([]model.User, error) {
 	return s.accountService.GetUsers(ctx, limit, offset)
 }
 

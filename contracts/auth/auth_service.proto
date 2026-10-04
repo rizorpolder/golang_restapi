@@ -19,9 +19,10 @@ service Auth{
     };
   };
 
-  rpc Refresh(RefreshRequest) returns(RefreshResponse){
+  rpc Logout(LogoutRequest) returns(common.EmptyResponse){
+
     option(google.api.http) = {
-      post: "/api/v1/auth/refresh",
+      post: "/api/v1/auth/logout",
       body:"*"
     };
   };
@@ -31,13 +32,21 @@ service Auth{
       body:"*"
     };
   };
-  rpc Logout(LogoutRequest) returns(common.EmptyResponse){
-
+  rpc Refresh(RefreshRequest) returns(RefreshResponse){
     option(google.api.http) = {
-      post: "/api/v1/auth/logout",
+      post: "/api/v1/auth/refresh",
       body:"*"
     };
   };
+
+  rpc DeleteUser(DeleteUserRequest) returns (common.EmptyResponse){
+    option(google.api.http) = {
+      delete: "/api/v1/auth/delete",
+      body:"*"
+    };
+  };
+
+
 }
 
 message RegisterRequest{
@@ -73,4 +82,8 @@ message ValidateResponse{
 message TokenPair{
   string access_token = 1;
   string refresh_token = 2;
+}
+
+message DeleteUserRequest{
+  uint64 userID = 1;
 }

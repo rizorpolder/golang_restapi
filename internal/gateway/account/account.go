@@ -13,12 +13,21 @@ type Service struct {
 	client accountpb.AccountClient
 }
 
-func New(client accountpb.AccountClient) *Service {
+func NewService(client accountpb.AccountClient) *Service {
 	return &Service{
 		client: client,
 	}
 }
 
+func (s *Service) CreateUser(ctx context.Context, user model.User) (model.User, error) {
+	res, err := s.client.CreateUser(ctx, &accountpb.CreateUserRequest{
+		User: mapper.UserCreateToPb(user),
+	})
+	if err != nil {
+		return model.User{}, fmt.Errorf("failed create user: %w", err)
+	}
+	return mapper.PbToUser(res.User), nil
+}
 func (s *Service) GetUser(ctx context.Context, userID uint64) (model.User, error) {
 	user, err := s.client.GetUser(ctx, &accountpb.GetUserRequest{UserId: userID})
 	if err != nil {
@@ -48,15 +57,6 @@ func (s *Service) DeleteUser(ctx context.Context, userID uint64) error {
 	_, err := s.client.DeleteUser(ctx, &accountpb.DeleteUserRequest{UserId: userID})
 	if err != nil {
 		return fmt.Errorf("failed delete user: %w", err)
-	}
-	return nil
-}
-func (s *Service) CreateUser(ctx context.Context, user model.User) error {
-	_, err := s.client.CreateUser(ctx, &accountpb.CreateUserRequest{
-		User: mapper.UserCreateToPb(user),
-	})
-	if err != nil {
-		return fmt.Errorf("failed create user: %w", err)
 	}
 	return nil
 }

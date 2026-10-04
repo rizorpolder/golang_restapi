@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/rs/zerolog"
+	accountpb "golang_restapi/contracts/account/go"
 	"golang_restapi/internal/account/model"
 	"golang_restapi/internal/account/repository"
 	"time"
@@ -15,6 +16,10 @@ type AccountService struct {
 
 func New(repo repository.Repository, logger *zerolog.Logger) *AccountService {
 	return &AccountService{repo: repo, logger: logger}
+}
+
+func NewService(client accountpb.AccountClient) *AccountService {
+
 }
 
 type Repository interface {

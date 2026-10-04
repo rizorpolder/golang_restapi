@@ -459,6 +459,50 @@ func (x *TokenPair) GetRefreshToken() string {
 	return ""
 }
 
+type DeleteUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserID        uint64                 `protobuf:"varint,1,opt,name=userID,proto3" json:"userID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteUserRequest) Reset() {
+	*x = DeleteUserRequest{}
+	mi := &file_auth_service_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteUserRequest) ProtoMessage() {}
+
+func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_service_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteUserRequest.ProtoReflect.Descriptor instead.
+func (*DeleteUserRequest) Descriptor() ([]byte, []int) {
+	return file_auth_service_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *DeleteUserRequest) GetUserID() uint64 {
+	if x != nil {
+		return x.UserID
+	}
+	return 0
+}
+
 var File_auth_service_proto protoreflect.FileDescriptor
 
 const file_auth_service_proto_rawDesc = "" +
@@ -486,13 +530,17 @@ const file_auth_service_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\"S\n" +
 	"\tTokenPair\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken2\xc4\x03\n" +
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"+\n" +
+	"\x11DeleteUserRequest\x12\x16\n" +
+	"\x06userID\x18\x01 \x01(\x04R\x06userID2\xa2\x04\n" +
 	"\x04Auth\x12Z\n" +
 	"\bRegister\x12\x15.auth.RegisterRequest\x1a\x15.common.EmptyResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/v1/auth/register\x12O\n" +
-	"\x05Login\x12\x12.auth.LoginRequest\x1a\x13.auth.LoginResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/v1/auth/login\x12W\n" +
-	"\aRefresh\x12\x14.auth.RefreshRequest\x1a\x15.auth.RefreshResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/api/v1/auth/refresh\x12`\n" +
-	"\rValidateToken\x12\x15.auth.ValidateRequest\x1a\x16.auth.ValidateResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/v1/auth/validate\x12T\n" +
-	"\x06Logout\x12\x13.auth.LogoutRequest\x1a\x15.common.EmptyResponse\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/api/v1/auth/logoutB'Z%golang_restapi/contracts/auth/go;authb\x06proto3"
+	"\x05Login\x12\x12.auth.LoginRequest\x1a\x13.auth.LoginResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/v1/auth/login\x12T\n" +
+	"\x06Logout\x12\x13.auth.LogoutRequest\x1a\x15.common.EmptyResponse\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/api/v1/auth/logout\x12`\n" +
+	"\rValidateToken\x12\x15.auth.ValidateRequest\x1a\x16.auth.ValidateResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/v1/auth/validate\x12W\n" +
+	"\aRefresh\x12\x14.auth.RefreshRequest\x1a\x15.auth.RefreshResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/api/v1/auth/refresh\x12\\\n" +
+	"\n" +
+	"DeleteUser\x12\x17.auth.DeleteUserRequest\x1a\x15.common.EmptyResponse\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01**\x13/api/v1/auth/deleteB'Z%golang_restapi/contracts/auth/go;authb\x06proto3"
 
 var (
 	file_auth_service_proto_rawDescOnce sync.Once
@@ -506,7 +554,7 @@ func file_auth_service_proto_rawDescGZIP() []byte {
 	return file_auth_service_proto_rawDescData
 }
 
-var file_auth_service_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_auth_service_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_auth_service_proto_goTypes = []any{
 	(*RegisterRequest)(nil),   // 0: auth.RegisterRequest
 	(*LoginRequest)(nil),      // 1: auth.LoginRequest
@@ -517,26 +565,29 @@ var file_auth_service_proto_goTypes = []any{
 	(*ValidateRequest)(nil),   // 6: auth.ValidateRequest
 	(*ValidateResponse)(nil),  // 7: auth.ValidateResponse
 	(*TokenPair)(nil),         // 8: auth.TokenPair
-	(*_go.EmptyResponse)(nil), // 9: common.EmptyResponse
+	(*DeleteUserRequest)(nil), // 9: auth.DeleteUserRequest
+	(*_go.EmptyResponse)(nil), // 10: common.EmptyResponse
 }
 var file_auth_service_proto_depIdxs = []int32{
-	8, // 0: auth.LoginResponse.tokenPair:type_name -> auth.TokenPair
-	8, // 1: auth.RefreshResponse.tokenPair:type_name -> auth.TokenPair
-	0, // 2: auth.Auth.Register:input_type -> auth.RegisterRequest
-	1, // 3: auth.Auth.Login:input_type -> auth.LoginRequest
-	4, // 4: auth.Auth.Refresh:input_type -> auth.RefreshRequest
-	6, // 5: auth.Auth.ValidateToken:input_type -> auth.ValidateRequest
-	3, // 6: auth.Auth.Logout:input_type -> auth.LogoutRequest
-	9, // 7: auth.Auth.Register:output_type -> common.EmptyResponse
-	2, // 8: auth.Auth.Login:output_type -> auth.LoginResponse
-	5, // 9: auth.Auth.Refresh:output_type -> auth.RefreshResponse
-	7, // 10: auth.Auth.ValidateToken:output_type -> auth.ValidateResponse
-	9, // 11: auth.Auth.Logout:output_type -> common.EmptyResponse
-	7, // [7:12] is the sub-list for method output_type
-	2, // [2:7] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	8,  // 0: auth.LoginResponse.tokenPair:type_name -> auth.TokenPair
+	8,  // 1: auth.RefreshResponse.tokenPair:type_name -> auth.TokenPair
+	0,  // 2: auth.Auth.Register:input_type -> auth.RegisterRequest
+	1,  // 3: auth.Auth.Login:input_type -> auth.LoginRequest
+	3,  // 4: auth.Auth.Logout:input_type -> auth.LogoutRequest
+	6,  // 5: auth.Auth.ValidateToken:input_type -> auth.ValidateRequest
+	4,  // 6: auth.Auth.Refresh:input_type -> auth.RefreshRequest
+	9,  // 7: auth.Auth.DeleteUser:input_type -> auth.DeleteUserRequest
+	10, // 8: auth.Auth.Register:output_type -> common.EmptyResponse
+	2,  // 9: auth.Auth.Login:output_type -> auth.LoginResponse
+	10, // 10: auth.Auth.Logout:output_type -> common.EmptyResponse
+	7,  // 11: auth.Auth.ValidateToken:output_type -> auth.ValidateResponse
+	5,  // 12: auth.Auth.Refresh:output_type -> auth.RefreshResponse
+	10, // 13: auth.Auth.DeleteUser:output_type -> common.EmptyResponse
+	8,  // [8:14] is the sub-list for method output_type
+	2,  // [2:8] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_auth_service_proto_init() }
@@ -550,7 +601,7 @@ func file_auth_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_auth_service_proto_rawDesc), len(file_auth_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

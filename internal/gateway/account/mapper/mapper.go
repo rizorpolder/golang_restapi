@@ -3,6 +3,7 @@ package mapper
 import (
 	accountpb "golang_restapi/contracts/account/go"
 	"golang_restapi/internal/gateway/model"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func PbsToUsers(pbs []*accountpb.User) []model.User {
@@ -25,6 +26,21 @@ func PbToUser(userpb *accountpb.User) model.User {
 		Age:        userpb.Age,
 		CreatedAt:  userpb.CreatedAt.AsTime(),
 		UpdatedAt:  userpb.UpdatedAt.AsTime(),
+	}
+}
+
+func UserToPb(user model.User) *accountpb.User {
+	return &accountpb.User{
+		Id:         user.ID,
+		Login:      user.Login,
+		Email:      user.Email,
+		Phone:      user.Phone,
+		FirstName:  user.FirstName,
+		LastName:   user.LastName,
+		MiddleName: user.MiddleName,
+		Age:        user.Age,
+		CreatedAt:  timestamppb.New(user.CreatedAt),
+		UpdatedAt:  timestamppb.New(user.UpdatedAt),
 	}
 }
 

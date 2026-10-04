@@ -42,7 +42,7 @@ service Gateway{
     };
   };
 
-  rpc CreateUser(CreateUserRequest) returns(common.EmptyResponse){
+  rpc CreateUser(CreateUserRequest) returns(CreateUserResponse){
     option(google.api.http) = {
       post: "/api/v1/users",
       body:"*"

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/rs/zerolog"
 	authpb "golang_restapi/contracts/auth/go"
+	"golang_restapi/internal/auth/model"
 	"golang_restapi/internal/auth/service"
 )
 
@@ -18,9 +19,10 @@ func New(authService service.AuthService, logger *zerolog.Logger) *Server {
 }
 
 type AuthService interface {
-	Register(ctx context.Context) error
-	Login(ctx context.Context) (string, error)
-	Refresh(ctx context.Context)
-	ValidateToken(ctx context.Context)
-	Logout(ctx context.Context)
+	Login(context.Context, authpb.LoginRequest) (authpb.TokenPair, error)
+	Logout(context.Context, string) error
+	Register(context.Context, authpb.RegisterRequest) (model.User, error)
+	Refresh(context.Context, string) (authpb.TokenPair, error)
+	ValidateToken(string) (uint64, error)
+	Delete(context.Context, uint64) error
 }

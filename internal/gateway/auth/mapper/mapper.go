@@ -11,3 +11,10 @@ func PbToTokenPair(tokenPair *authpb.TokenPair) model.TokenPair {
 		RefreshToken: tokenPair.RefreshToken,
 	}
 }
+
+func TokenPairToPb(tokenPair model.TokenPair) *authpb.TokenPair {
+	return &authpb.TokenPair{
+		AccessToken:  tokenPair.AccessToken,
+		RefreshToken: tokenPair.RefreshToken,
+	}
+}

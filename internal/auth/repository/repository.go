@@ -24,7 +24,7 @@ func NewRepository(db *gorm.DB, l *zerolog.Logger) *Repository {
 	}
 }
 
-func (r *Repository) CreateUser(ctx context.Context, user model.User) error {
+func (r *Repository) CreateUser(ctx context.Context, user model.User) (model.User, error) {
 	userRepo := mapper.UserToRepoUser(user)
 	res := r.db.WithContext(ctx).
 		Clauses(clause.OnConflict{UpdateAll: true}).
@@ -32,7 +32,19 @@ func (r *Repository) CreateUser(ctx context.Context, user model.User) error {
 
 	if res.Error != nil {
 		r.l.Err(res.Error).Msg("Failed to create user")
-		return fmt.Errorf("failed to create user: %w", res.Error)
+		return model.User{}, fmt.Errorf("failed to create user: %w", res.Error)
+	}
+	return user, nil
+}
+
+func (r *Repository) DeleteUser(ctx context.Context, userId uint64) error {
+	user, err := r.GetUserByID(ctx, userId)
+	if err != nil {
+		return fmt.Errorf("user not found: %w", err)
+	}
+	res := r.db.WithContext(ctx).Delete(&user)
+	if res.Error != nil {
+		r.l.Err(res.Error).Msg("Failed to delete user")
 	}
 	return nil
 }
