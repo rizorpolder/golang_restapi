@@ -47,7 +47,7 @@ type GatewayClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	GetCurrentUser(ctx context.Context, in *_go.EmptyRequest, opts ...grpc.CallOption) (*GetCurrentUserResponse, error)
-	GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*GetUsersResponse, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
 	UpdateCurrentUser(ctx context.Context, in *UpdateCurrentUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*_go.EmptyResponse, error)
@@ -142,9 +142,9 @@ func (c *gatewayClient) GetCurrentUser(ctx context.Context, in *_go.EmptyRequest
 	return out, nil
 }
 
-func (c *gatewayClient) GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
+func (c *gatewayClient) GetUsers(ctx context.Context, in *GetUsersRequest, opts ...grpc.CallOption) (*GetUsersResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetUserResponse)
+	out := new(GetUsersResponse)
 	err := c.cc.Invoke(ctx, Gateway_GetUsers_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -204,7 +204,7 @@ type GatewayServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	GetCurrentUser(context.Context, *_go.EmptyRequest) (*GetCurrentUserResponse, error)
-	GetUsers(context.Context, *GetUsersRequest) (*GetUserResponse, error)
+	GetUsers(context.Context, *GetUsersRequest) (*GetUsersResponse, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*_go.EmptyResponse, error)
 	UpdateCurrentUser(context.Context, *UpdateCurrentUserRequest) (*_go.EmptyResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*_go.EmptyResponse, error)
@@ -243,7 +243,7 @@ func (UnimplementedGatewayServer) GetUser(context.Context, *GetUserRequest) (*Ge
 func (UnimplementedGatewayServer) GetCurrentUser(context.Context, *_go.EmptyRequest) (*GetCurrentUserResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetCurrentUser not implemented")
 }
-func (UnimplementedGatewayServer) GetUsers(context.Context, *GetUsersRequest) (*GetUserResponse, error) {
+func (UnimplementedGatewayServer) GetUsers(context.Context, *GetUsersRequest) (*GetUsersResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUsers not implemented")
 }
 func (UnimplementedGatewayServer) UpdateUser(context.Context, *UpdateUserRequest) (*_go.EmptyResponse, error) {

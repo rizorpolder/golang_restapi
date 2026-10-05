@@ -26,7 +26,7 @@ var File_gateway_service_proto protoreflect.FileDescriptor
 
 const file_gateway_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15gateway_service.proto\x12\agateway\x1a\x1cgoogle/api/annotations.proto\x1a\x13common/common.proto\x1a\x1bgateway/gateway_model.proto2\xf6\t\n" +
+	"\x15gateway_service.proto\x12\agateway\x1a\x1cgoogle/api/annotations.proto\x1a\x13common/common.proto\x1a\x1bgateway/gateway_model.proto2\xf7\t\n" +
 	"\aGateway\x12a\n" +
 	"\bRegister\x12\x18.gateway.RegisterRequest\x1a\x19.gateway.RegisterResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/v1/auth/register\x12U\n" +
 	"\x05Login\x12\x15.gateway.LoginRequest\x1a\x16.gateway.LoginResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/v1/auth/login\x12]\n" +
@@ -36,8 +36,8 @@ const file_gateway_service_proto_rawDesc = "" +
 	"\n" +
 	"CreateUser\x12\x1a.gateway.CreateUserRequest\x1a\x1b.gateway.CreateUserResponse\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/api/v1/users\x12]\n" +
 	"\aGetUser\x12\x17.gateway.GetUserRequest\x1a\x18.gateway.GetUserResponse\"\x1f\x82\xd3\xe4\x93\x02\x19\x12\x17/api/v1/users/{user_id}\x12a\n" +
-	"\x0eGetCurrentUser\x12\x14.common.EmptyRequest\x1a\x1f.gateway.GetCurrentUserResponse\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/api/v1/users/me\x12U\n" +
-	"\bGetUsers\x12\x18.gateway.GetUsersRequest\x1a\x18.gateway.GetUserResponse\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/api/v1/users\x12c\n" +
+	"\x0eGetCurrentUser\x12\x14.common.EmptyRequest\x1a\x1f.gateway.GetCurrentUserResponse\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/api/v1/users/me\x12V\n" +
+	"\bGetUsers\x12\x18.gateway.GetUsersRequest\x1a\x19.gateway.GetUsersResponse\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/api/v1/users\x12c\n" +
 	"\n" +
 	"UpdateUser\x12\x1a.gateway.UpdateUserRequest\x1a\x15.common.EmptyResponse\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\x1a\x17/api/v1/users/{user_id}\x12j\n" +
 	"\x11UpdateCurrentUser\x12!.gateway.UpdateCurrentUserRequest\x1a\x15.common.EmptyResponse\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\x1a\x10/api/v1/users/me\x12`\n" +
@@ -66,6 +66,7 @@ var file_gateway_service_proto_goTypes = []any{
 	(*CreateUserResponse)(nil),       // 17: gateway.CreateUserResponse
 	(*GetUserResponse)(nil),          // 18: gateway.GetUserResponse
 	(*GetCurrentUserResponse)(nil),   // 19: gateway.GetCurrentUserResponse
+	(*GetUsersResponse)(nil),         // 20: gateway.GetUsersResponse
 }
 var file_gateway_service_proto_depIdxs = []int32{
 	0,  // 0: gateway.Gateway.Register:input_type -> gateway.RegisterRequest
@@ -89,7 +90,7 @@ var file_gateway_service_proto_depIdxs = []int32{
 	17, // 18: gateway.Gateway.CreateUser:output_type -> gateway.CreateUserResponse
 	18, // 19: gateway.Gateway.GetUser:output_type -> gateway.GetUserResponse
 	19, // 20: gateway.Gateway.GetCurrentUser:output_type -> gateway.GetCurrentUserResponse
-	18, // 21: gateway.Gateway.GetUsers:output_type -> gateway.GetUserResponse
+	20, // 21: gateway.Gateway.GetUsers:output_type -> gateway.GetUsersResponse
 	15, // 22: gateway.Gateway.UpdateUser:output_type -> common.EmptyResponse
 	15, // 23: gateway.Gateway.UpdateCurrentUser:output_type -> common.EmptyResponse
 	15, // 24: gateway.Gateway.DeleteUser:output_type -> common.EmptyResponse

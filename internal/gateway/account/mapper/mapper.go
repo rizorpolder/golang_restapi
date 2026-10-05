@@ -67,6 +67,18 @@ func UserUpdateToPb(user model.User) *accountpb.UpdateUser {
 	}
 }
 
+func PbToCreateUser(pb *accountpb.CreateUser) model.CreateUser {
+	return model.CreateUser{
+		Login:      pb.Login,
+		Email:      pb.Email,
+		Phone:      pb.Phone,
+		FirstName:  pb.FirstName,
+		LastName:   pb.LastName,
+		MiddleName: pb.MiddleName,
+		Age:        pb.Age,
+	}
+}
+
 func CreateUserToUser(createUser model.CreateUser) model.User {
 	return model.User{
 		Login:      createUser.Login,

@@ -9,13 +9,13 @@ import (
 
 // методы управления пользователями
 
-func (s *GatewayService) CreateUser(ctx context.Context, newUser model.CreateUser) error {
+func (s *GatewayService) CreateUser(ctx context.Context, newUser model.CreateUser) (model.User, error) {
 	user := mapper.CreateUserToUser(newUser)
-	_, err := s.accountService.CreateUser(ctx, user)
+	user, err := s.accountService.CreateUser(ctx, user)
 	if err != nil {
-		return fmt.Errorf("failed create user: %w", err)
+		return model.User{}, fmt.Errorf("failed create user: %w", err)
 	}
-	return nil
+	return user, nil
 }
 
 func (s *GatewayService) GetUsers(ctx context.Context, limit uint32, offset uint32) ([]model.User, error) {

@@ -462,7 +462,7 @@ func (x *ValidateTokenResponse) GetIsValid() bool {
 
 type CreateUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	User          *_go.CreateUser        `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -497,11 +497,11 @@ func (*CreateUserRequest) Descriptor() ([]byte, []int) {
 	return file_gateway_model_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *CreateUserRequest) GetUserId() uint64 {
+func (x *CreateUserRequest) GetUser() *_go.CreateUser {
 	if x != nil {
-		return x.UserId
+		return x.User
 	}
-	return 0
+	return nil
 }
 
 type CreateUserResponse struct {
@@ -943,9 +943,9 @@ const file_gateway_model_proto_rawDesc = "" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\"K\n" +
 	"\x15ValidateTokenResponse\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\x12\x19\n" +
-	"\bis_valid\x18\x02 \x01(\bR\aisValid\",\n" +
-	"\x11CreateUserRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\x04R\x06userId\"7\n" +
+	"\bis_valid\x18\x02 \x01(\bR\aisValid\"<\n" +
+	"\x11CreateUserRequest\x12'\n" +
+	"\x04user\x18\x01 \x01(\v2\x13.account.CreateUserR\x04user\"7\n" +
 	"\x12CreateUserResponse\x12!\n" +
 	"\x04user\x18\x01 \x01(\v2\r.account.UserR\x04user\")\n" +
 	"\x0eGetUserRequest\x12\x17\n" +
@@ -1006,7 +1006,8 @@ var file_gateway_model_proto_goTypes = []any{
 	(*DeleteUserRequest)(nil),        // 18: gateway.DeleteUserRequest
 	(*_go.User)(nil),                 // 19: account.User
 	(*_go1.TokenPair)(nil),           // 20: auth.TokenPair
-	(*_go2.Pagination)(nil),          // 21: pagination.Pagination
+	(*_go.CreateUser)(nil),           // 21: account.CreateUser
+	(*_go2.Pagination)(nil),          // 22: pagination.Pagination
 }
 var file_gateway_model_proto_depIdxs = []int32{
 	19, // 0: gateway.RegisterRequest.user:type_name -> account.User
@@ -1015,19 +1016,20 @@ var file_gateway_model_proto_depIdxs = []int32{
 	19, // 3: gateway.LoginResponse.user:type_name -> account.User
 	20, // 4: gateway.LoginResponse.tokenPair:type_name -> auth.TokenPair
 	20, // 5: gateway.RefreshResponse.tokenPair:type_name -> auth.TokenPair
-	19, // 6: gateway.CreateUserResponse.user:type_name -> account.User
-	19, // 7: gateway.GetUserResponse.user:type_name -> account.User
-	21, // 8: gateway.GetUsersRequest.pagination:type_name -> pagination.Pagination
-	19, // 9: gateway.GetUsersResponse.users:type_name -> account.User
-	21, // 10: gateway.GetUsersResponse.pagination:type_name -> pagination.Pagination
-	19, // 11: gateway.GetCurrentUserResponse.user:type_name -> account.User
-	19, // 12: gateway.UpdateUserRequest.user:type_name -> account.User
-	19, // 13: gateway.UpdateCurrentUserRequest.user:type_name -> account.User
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	21, // 6: gateway.CreateUserRequest.user:type_name -> account.CreateUser
+	19, // 7: gateway.CreateUserResponse.user:type_name -> account.User
+	19, // 8: gateway.GetUserResponse.user:type_name -> account.User
+	22, // 9: gateway.GetUsersRequest.pagination:type_name -> pagination.Pagination
+	19, // 10: gateway.GetUsersResponse.users:type_name -> account.User
+	22, // 11: gateway.GetUsersResponse.pagination:type_name -> pagination.Pagination
+	19, // 12: gateway.GetCurrentUserResponse.user:type_name -> account.User
+	19, // 13: gateway.UpdateUserRequest.user:type_name -> account.User
+	19, // 14: gateway.UpdateCurrentUserRequest.user:type_name -> account.User
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_gateway_model_proto_init() }

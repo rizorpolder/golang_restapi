@@ -46,7 +46,7 @@ message ValidateTokenResponse{
   bool is_valid = 2;
 }
 message CreateUserRequest{
-  uint64 user_id = 1;
+  account.CreateUser user = 1;
 }
 message CreateUserResponse{
   account.User user = 1;

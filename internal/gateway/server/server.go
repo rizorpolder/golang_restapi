@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"github.com/rs/zerolog"
+	accountpb "golang_restapi/contracts/account/go"
 	common "golang_restapi/contracts/common/go"
 	gatewaypb "golang_restapi/contracts/gateway/go"
 	accountMapper "golang_restapi/internal/gateway/account/mapper"
@@ -32,7 +33,7 @@ type GatewayService interface {
 	Refresh(ctx context.Context, refreshToken string) (model.TokenPair, error)
 	ValidateToken(ctx context.Context, accessToken string) (uint64, bool, error)
 	//Account
-	CreateUser(ctx context.Context, newUser model.CreateUser) error
+	CreateUser(ctx context.Context, newUser model.CreateUser) (model.User, error)
 	GetUsers(ctx context.Context, limit uint32, offset uint32) ([]model.User, error)
 	GetUser(ctx context.Context, id uint64) (model.User, error)
 	DeleteUser(ctx context.Context, id uint64) error
@@ -89,5 +90,59 @@ func (s *Server) ValidateToken(ctx context.Context, req *gatewaypb.ValidateToken
 }
 
 func (s *Server) CreateUser(ctx context.Context, req *gatewaypb.CreateUserRequest) (*gatewaypb.CreateUserResponse, error) {
-	err := s.gatewayService.CreateUser(ctx, req.UserId) //TODO поправить поля в grpc
+	user := accountMapper.PbToCreateUser(req.User)
+	created, err := s.gatewayService.CreateUser(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	return &gatewaypb.CreateUserResponse{
+		User: accountMapper.UserToPb(created),
+	}, nil
+}
+
+func (s *Server) GetUser(ctx context.Context, req *gatewaypb.GetUserRequest) (*gatewaypb.GetUserResponse, error) {
+	user, err := s.gatewayService.GetUser(ctx, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &gatewaypb.GetUserResponse{
+		User: accountMapper.UserToPb(user),
+	}, nil
+}
+
+func (s *Server) GetCurrentUser(ctx context.Context, request *common.EmptyRequest) (*gatewaypb.GetCurrentUserResponse, error) {
+	return nil, nil
+}
+
+func (s *Server) GetUsers(ctx context.Context, req *gatewaypb.GetUsersRequest) (*gatewaypb.GetUsersResponse, error) {
+	users, err := s.gatewayService.GetUsers(ctx, req.Pagination.Limit, req.Pagination.Offset)
+	if err != nil {
+		return nil, err
+	}
+	pbUsers := make([]*accountpb.User, len(users))
+	for i := range users {
+		pbUsers[i] = accountMapper.UserToPb(users[i])
+	}
+	return &gatewaypb.GetUsersResponse{Users: pbUsers}, nil
+}
+
+func (s *Server) UpdateCurrentUser(ctx context.Context, req *gatewaypb.UpdateCurrentUserRequest) (*common.EmptyResponse, error) {
+	return nil, nil
+}
+
+func (s *Server) UpdateUser(ctx context.Context, req *gatewaypb.UpdateUserRequest) (*common.EmptyResponse, error) {
+	user := accountMapper.PbToUser(req.User)
+	err := s.gatewayService.UpdateUser(ctx, req.UserId, user)
+	if err != nil {
+		return &common.EmptyResponse{}, err
+	}
+	return &common.EmptyResponse{}, nil
+}
+
+func (s *Server) DeleteUser(ctx context.Context, req *gatewaypb.DeleteUserRequest) (*common.EmptyResponse, error) {
+	err := s.gatewayService.DeleteUser(ctx, req.UserId)
+	if err != nil {
+		return &common.EmptyResponse{}, err
+	}
+	return &common.EmptyResponse{}, nil
 }
