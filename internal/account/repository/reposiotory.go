@@ -24,16 +24,17 @@ func NewRepository(db *gorm.DB, logger *zerolog.Logger) *Repository {
 	}
 }
 
-func (repo *Repository) CreateUser(ctx context.Context, user model.User) error {
+func (repo *Repository) CreateUser(ctx context.Context, user model.User) (model.User, error) {
+	var result repomodel.User
 	userRepos := mapper.UserToRepoUser(user)
-	res := repo.db.WithContext(ctx).
+	res := repo.db.WithContext(ctx).Model(&result).
 		Clauses(clause.OnConflict{UpdateAll: true}).
 		Create(&userRepos)
 	if res.Error != nil {
 		repo.logger.Err(res.Error).Msg("failed to save user")
-		return fmt.Errorf("failed to save user %w", res.Error)
+		return model.User{}, fmt.Errorf("failed to save user %w", res.Error)
 	}
-	return nil
+	return mapper.RepoUserToUser(result), nil
 }
 
 func (repo *Repository) GetUser(ctx context.Context, id uint64) (model.User, error) {
@@ -89,4 +90,55 @@ func (repo *Repository) UpdateUser(ctx context.Context, userId uint64, user mode
 		return fmt.Errorf("failed to update user %w", res.Error)
 	}
 	return nil
+}
+
+func (repo *Repository) TransferBalance(ctx context.Context, fromUserID, toUserID uint64, amount float64) error {
+	if amount <= 0 {
+		return fmt.Errorf("transfer amount must be greater than zero")
+	}
+	if fromUserID == toUserID {
+		return fmt.Errorf("cannot transfer to the same user")
+	}
+
+	return repo.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var toUser repomodel.User
+		res := tx.Model(&repomodel.User{}).
+			Where("id = ? AND is_deleted = ?", toUserID, false).
+			First(&toUser)
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return fmt.Errorf("sender user not found")
+		} else if res.Error != nil {
+			return fmt.Errorf("failed to find user: %w", res.Error)
+		}
+
+		var fromUser repomodel.User
+		res = tx.Model(&repomodel.User{}).
+			Where("id = ? AND is_deleted = ?", fromUserID, false).
+			First(&fromUser)
+
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return fmt.Errorf("sender user not found")
+		} else if res.Error != nil {
+			return fmt.Errorf("failed to find user: %w", res.Error)
+		}
+
+		if fromUser.Balance < amount {
+			return fmt.Errorf("insufficient balance: current balance %.2f, transfer amount %.2f", fromUser.Balance, amount)
+		}
+
+		res = tx.Model(&repomodel.User{}).
+			Where("id = ? AND is_deleted = ?", fromUserID, false).
+			Update("balance", fromUser.Balance-amount)
+		if res.Error != nil {
+			return fmt.Errorf("failed to deduct sender balance %w", res.Error)
+		}
+
+		res = tx.Model(&repomodel.User{}).
+			Where("id = ? AND is_deleted = ?", toUserID, false).
+			Update("balance", toUser.Balance+amount)
+		if res.Error != nil {
+			return fmt.Errorf("failed to add to recipient balance %w", res.Error)
+		}
+		return nil
+	})
 }

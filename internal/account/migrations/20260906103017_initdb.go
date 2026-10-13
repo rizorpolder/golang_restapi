@@ -8,10 +8,11 @@ import (
 
 func init() {
 	goose.AddNamedMigrationContext("20260906103017_initdb.go", upCreateUserTable, downCreateUserTable)
+	goose.AddNamedMigrationContext("20260906103017_add_account_index.go", upAddAccountIndex, downAddAccountIndex)
 }
 
 func upCreateUserTable(ctx context.Context, tx *sql.Tx) error {
-	_, err := tx.Exec(`CREATE TABLE IF NOT EXISTS users (
+	query := `CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
     login TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
@@ -22,8 +23,9 @@ func upCreateUserTable(ctx context.Context, tx *sql.Tx) error {
     age INT,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-	);
-`)
+	);`
+
+	_, err := tx.Exec(query)
 
 	return err
 }

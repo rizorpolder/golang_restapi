@@ -1,0 +1,40 @@
+syntax = "proto3";
+package transaction;
+
+import "common/common.proto";
+import "pagination/pagination.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service TransactionService{
+  rpc Deposit(DepositRequest) returns (common.EmptyResponse);
+  rpc Withdraw(WithdrawRequest) returns(common.EmptyResponse);
+  rpc Transfer(TransferRequest) returns (common.EmptyResponse);
+  rpc GetTransactions(GetTransactionRequest) returns (GetTransactionResponse);
+}
+
+message DepositRequest{
+  uint64 user_id = 1;
+  uint64 amount = 2;
+}
+message WithdrawRequest{
+  uint64 user_id = 1;
+  uint64 amount = 2;
+}
+message TransferRequest{
+  uint64 user_id = 1;
+  uint64 amount = 2;
+  uint64 recipient = 3;
+}
+
+message GetTransactionRequest{
+  optional uint64 user_id = 1;
+  optional string type = 2;
+  optional string status = 3;
+  optional  google.protobuf.Timestamp date_from = 4;
+  optional  google.protobuf.Timestamp date_to = 5;
+  optional pagination.Pagination pagination = 6;
+}
+message GetTransactionResponse{
+  repeated TransactionDetails transactions = 1;
+}

@@ -13,6 +13,7 @@ type User struct {
 	Age        uint32    `gorm:"column:age"`
 	CreatedAt  time.Time `gorm:"column:created_at"`
 	UpdatedAt  time.Time `gorm:"column:updated_at"`
+	Balance    float64   `gorm:"column:balance"`
 }
 
 func (User) TableName() string {

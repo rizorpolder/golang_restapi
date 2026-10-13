@@ -36,6 +36,25 @@ services:
     networks:
       - app-network
 
+  transaction-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: transaction_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${TRANSACTION_DB_PASSWORD}
+    ports:
+      - "5434:5432"   # снаружи 5434, внутри контейнера 5432
+    volumes:
+      - transaction-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d account_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+
+
   # ===== Сервисы =====
   # env_file — базовый конфиг сервиса, environment — только то, что в docker отличается
   auth:
@@ -47,7 +66,7 @@ services:
       DB_DSN: host=auth-db port=5432 user=postgres password=${AUTH_DB_PASSWORD} dbname=auth_db sslmode=disable
       JWT_SECRET: ${JWT_SECRET}
     ports:
-      - "50051:50051"
+      - "50052:50052"
     depends_on:
       auth-db:
         condition: service_healthy
@@ -62,7 +81,7 @@ services:
     environment:
       DB_DSN: host=account-db port=5432 user=postgres password=${ACCOUNT_DB_PASSWORD} dbname=account_db sslmode=disable
     ports:
-      - "50052:50052"
+      - "50053:50053"
     depends_on:
       account-db:
         condition: service_healthy
@@ -76,8 +95,8 @@ services:
       dockerfile: deployments/docker/gateway/Dockerfile
     env_file: configs/gateway.env
     environment:
-      AUTH_ADDR: auth:50051
-      ACCOUNT_ADDR: account:50052
+      AUTH_ADDR: auth:50052
+      ACCOUNT_ADDR: account:50053
     ports:
       - "9000:9000"
     depends_on:
@@ -89,6 +108,7 @@ services:
 volumes:
   auth-db-data:
   account-db-data:
+  transactions-db-data:
 
 networks:
   app-network:
