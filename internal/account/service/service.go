@@ -4,16 +4,15 @@ import (
 	"context"
 	"github.com/rs/zerolog"
 	"golang_restapi/internal/account/model"
-	"golang_restapi/internal/account/repository"
 	"time"
 )
 
 type AccountService struct {
-	repo   repository.Repository
+	repo   Repository
 	logger *zerolog.Logger
 }
 
-func New(repo repository.Repository, logger *zerolog.Logger) *AccountService {
+func New(repo Repository, logger *zerolog.Logger) *AccountService {
 	return &AccountService{repo: repo, logger: logger}
 }
 

@@ -81,7 +81,7 @@ func (a *App) getAuthServer(ctx context.Context) (*server.Server, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to get auth service: %w", err)
 		}
-		a.authServer = server.New(*svc, a.logger)
+		a.authServer = server.New(svc, a.logger)
 	}
 	return a.authServer, nil
 }
@@ -92,7 +92,7 @@ func (a *App) getAuthService(ctx context.Context) (*service.AuthService, error) 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get repository: %w", err)
 		}
-		a.authService = service.New(*repo, a.cfg, a.logger)
+		a.authService = service.New(repo, a.cfg, a.logger)
 	}
 	return a.authService, nil
 }

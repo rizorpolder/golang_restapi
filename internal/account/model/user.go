@@ -11,6 +11,8 @@ type User struct {
 	LastName   string
 	MiddleName string
 	Age        uint32
+	Balance    float32
+	IsDeleted  bool
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

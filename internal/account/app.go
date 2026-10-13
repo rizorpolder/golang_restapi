@@ -107,7 +107,7 @@ func (a *App) getAccountService(ctx context.Context) (*service.AccountService, e
 		if err != nil {
 			return nil, fmt.Errorf("failed to get repository: %w", err)
 		}
-		a.accountService = service.New(*repo, a.logger)
+		a.accountService = service.New(repo, a.logger)
 	}
 	return a.accountService, nil
 }
@@ -118,7 +118,7 @@ func (a *App) getAccountServer(ctx context.Context) (*server.Server, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to get account server: %w", err)
 		}
-		a.accountServer = server.New(*svc, a.logger)
+		a.accountServer = server.New(svc, a.logger)
 	}
 	return a.accountServer, nil
 }

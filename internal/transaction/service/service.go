@@ -4,15 +4,14 @@ import (
 	"context"
 	"github.com/rs/zerolog"
 	"golang_restapi/internal/transaction/model"
-	"golang_restapi/internal/transaction/repository"
 )
 
 type TransactionService struct {
-	repo   repository.Repository
+	repo   Repository
 	logger *zerolog.Logger
 }
 
-func New(repo repository.Repository, logger *zerolog.Logger) *TransactionService {
+func New(repo Repository, logger *zerolog.Logger) *TransactionService {
 	return &TransactionService{
 		repo:   repo,
 		logger: logger,

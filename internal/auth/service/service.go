@@ -11,12 +11,11 @@ import (
 	authpb "golang_restapi/contracts/auth/go"
 	"golang_restapi/internal/auth/config"
 	"golang_restapi/internal/auth/model"
-	"golang_restapi/internal/auth/repository"
 	"time"
 )
 
 type AuthService struct {
-	repository repository.Repository
+	repository Repository
 	cfg        *config.Config
 	logger     *zerolog.Logger
 }
@@ -31,7 +30,7 @@ type Repository interface {
 	RevokeRefreshToken(ctx context.Context, token string) error
 }
 
-func New(repo repository.Repository, cfg *config.Config, logger *zerolog.Logger) *AuthService {
+func New(repo Repository, cfg *config.Config, logger *zerolog.Logger) *AuthService {
 	return &AuthService{repository: repo, cfg: cfg, logger: logger}
 }
 

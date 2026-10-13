@@ -7,21 +7,20 @@ import (
 	commonpb "golang_restapi/contracts/common/go"
 	"golang_restapi/internal/account/mapper"
 	"golang_restapi/internal/account/model"
-	"golang_restapi/internal/account/service"
 )
 
 type Server struct {
 	accountpb.UnimplementedAccountServer
-	accountService service.AccountService
+	accountService AccountService
 	logger         *zerolog.Logger
 }
 
-func New(accountService service.AccountService, logger *zerolog.Logger) *Server {
+func New(accountService AccountService, logger *zerolog.Logger) *Server {
 	return &Server{accountService: accountService, logger: logger}
 }
 
 type AccountService interface {
-	CreateUser(context.Context, model.User) (model.User, error)
+	CreateUser(context.Context, model.CreateUser) (model.User, error)
 	GetUser(context.Context, uint64) (model.User, error)
 	GetUsers(context.Context, int, int) ([]model.User, error)
 	DeleteUser(context.Context, uint64) error

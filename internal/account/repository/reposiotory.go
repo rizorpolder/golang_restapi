@@ -39,9 +39,9 @@ func (repo *Repository) CreateUser(ctx context.Context, user model.User) (model.
 
 func (repo *Repository) GetUser(ctx context.Context, id uint64) (model.User, error) {
 	var user repomodel.User
-	res := repo.db.WithContext(ctx).Model(&user).Where("id = ?", id).First(&user)
+	res := repo.db.WithContext(ctx).Model(&user).Where("id = ? AND is_deleted = ?", id, false).First(&user)
 	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-		return model.User{}, fmt.Errorf("User not found") //404
+		return model.User{}, fmt.Errorf("user not found") //404
 	} else if res.Error != nil {
 		repo.logger.Err(res.Error).Msg("failed to get user id")
 	}
@@ -52,6 +52,7 @@ func (repo *Repository) GetUsers(ctx context.Context, limit int, offset int) ([]
 	var repoUsers []repomodel.User
 	res := repo.db.WithContext(ctx).
 		Model(&repomodel.User{}).
+		Where("is_deleted = ?", false).
 		Offset(offset).
 		Limit(limit).
 		Find(&repoUsers)
@@ -72,7 +73,7 @@ func (repo *Repository) GetUsers(ctx context.Context, limit int, offset int) ([]
 func (repo *Repository) DeleteUser(ctx context.Context, id uint64) error {
 	res := repo.db.WithContext(ctx).
 		Where("id = ?", id).
-		Delete(&repomodel.User{})
+		Update("is_deleted", true)
 	if res.Error != nil {
 		repo.logger.Err(res.Error).Msg("failed to delete user")
 		return fmt.Errorf("failed to delete user %w", res.Error)
@@ -81,15 +82,65 @@ func (repo *Repository) DeleteUser(ctx context.Context, id uint64) error {
 }
 
 func (repo *Repository) UpdateUser(ctx context.Context, userId uint64, user model.UpdateUser) error {
+	repoUser := mapper.UpdateUserToRepoUser(user)
 	res := repo.db.WithContext(ctx).
 		Model(&repomodel.User{}).
-		Where("id = ?", userId).
-		Updates(user)
+		Where("id = ? AND is_deleted = ?", userId, false).
+		Updates(repoUser)
 	if res.Error != nil {
 		repo.logger.Err(res.Error).Msg("failed to update user")
 		return fmt.Errorf("failed to update user %w", res.Error)
 	}
 	return nil
+}
+
+func (repo *Repository) GetBalance(ctx context.Context, userID uint64) (float32, error) {
+	var repUser repomodel.User
+	res := repo.db.WithContext(ctx).
+		Model(&repomodel.User{}).
+		Select("balance").
+		Where("id = ? AND is_deleted = ?", userID, false).
+		First(&repUser)
+	if res.Error != nil {
+		repo.logger.Err(res.Error).Msg("failed to get balance")
+		return 0, fmt.Errorf("failed to get balance %w", res.Error)
+	}
+	return repUser.Balance, nil
+}
+
+func (repo *Repository) UpdateBalance(ctx context.Context, userId uint64, amount float32, operationType model.BalanceOperationType) (float32, float32, error) {
+	var user repomodel.User
+	res := repo.db.WithContext(ctx).
+		Model(&repomodel.User{}).
+		Where("id = ? AND is_deleted = ?", userId, false).
+		Select("balance").
+		First(&user)
+	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+		return 0, 0, fmt.Errorf("user not found")
+	} else if res.Error != nil {
+		repo.logger.Err(res.Error).Msg("failed to get user")
+		return 0, 0, fmt.Errorf("failed to get balance %w", res.Error)
+	}
+
+	oldBalance := user.Balance
+	var newBalance float32
+	switch operationType {
+	case model.BalanceOperationDeposit:
+		newBalance = oldBalance + amount
+	case model.BalanceOperationCredit:
+		newBalance = oldBalance - amount
+		if newBalance < 0 {
+			return 0, 0, fmt.Errorf("insufficient balance")
+		}
+	default:
+		return 0, 0, fmt.Errorf("invalid operation type")
+	}
+	if res.Error != nil {
+		repo.logger.Err(res.Error).Msg("failed to update balance")
+		return 0, 0, fmt.Errorf("failed to update balance %w", res.Error)
+	}
+	return oldBalance, newBalance, nil
+
 }
 
 func (repo *Repository) TransferBalance(ctx context.Context, fromUserID, toUserID uint64, amount float64) error {

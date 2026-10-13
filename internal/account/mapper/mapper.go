@@ -16,6 +16,8 @@ func PbToUser(userpb *account.User) model.User {
 		LastName:   userpb.LastName,
 		MiddleName: userpb.MiddleName,
 		Age:        userpb.Age,
+		Balance:    float32(userpb.Balance),
+		IsDeleted:  userpb.IsDeleted,
 		CreatedAt:  userpb.CreatedAt.AsTime(),
 		UpdatedAt:  userpb.UpdatedAt.AsTime(),
 	}
@@ -60,6 +62,7 @@ func PbToUserCreate(accountpbUser *account.CreateUser) model.CreateUser {
 		LastName:   accountpbUser.LastName,
 		MiddleName: accountpbUser.MiddleName,
 		Age:        accountpbUser.Age,
+		Balance:    float32(accountpbUser.Balance),
 	}
 }
 
@@ -71,5 +74,6 @@ func PbToUserUpdate(userpb *account.UpdateUser) model.UpdateUser {
 		LastName:   userpb.LastName,
 		MiddleName: userpb.MiddleName,
 		Age:        userpb.Age,
+		Balance:    float32(userpb.Balance),
 	}
 }
