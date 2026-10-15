@@ -21,6 +21,7 @@ message UpdateUser{
   string middle_name = 4;
   string email = 5;
   uint32 age = 6;
+  float balance =7;
 }
 
 message User{

@@ -140,10 +140,9 @@ func (repo *Repository) UpdateBalance(ctx context.Context, userId uint64, amount
 		return 0, 0, fmt.Errorf("failed to update balance %w", res.Error)
 	}
 	return oldBalance, newBalance, nil
-
 }
 
-func (repo *Repository) TransferBalance(ctx context.Context, fromUserID, toUserID uint64, amount float64) error {
+func (repo *Repository) TransferBalance(ctx context.Context, fromUserID, toUserID uint64, amount float32) error {
 	if amount <= 0 {
 		return fmt.Errorf("transfer amount must be greater than zero")
 	}

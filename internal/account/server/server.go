@@ -25,6 +25,10 @@ type AccountService interface {
 	GetUsers(context.Context, int, int) ([]model.User, error)
 	DeleteUser(context.Context, uint64) error
 	UpdateUser(context.Context, uint64, model.UpdateUser) error
+	GetBalance(context.Context, uint64) (model.GetBalanceResponse, error)
+	Deposit(ctx context.Context, userId uint64, amount int64) (model.UpdateBalanceResponse, error)
+	Withdraw(ctx context.Context, userId uint64, amount int64) (model.UpdateBalanceResponse, error)
+	Transfer(ctx context.Context, fromUser, ToUser uint64, amount int64) (model.GetBalanceResponse, model.GetBalanceResponse, error)
 }
 
 func (s *Server) CreateUser(ctx context.Context, req *accountpb.CreateUserRequest) (*accountpb.CreateUserResponse, error) {
@@ -66,4 +70,61 @@ func (s *Server) DeleteUser(ctx context.Context, req *accountpb.DeleteUserReques
 		return nil, err
 	}
 	return &accountpb.DeleteUserResponse{Result: true}, nil
+}
+
+func (s *Server) Deposit(ctx context.Context, req *accountpb.DepositRequest) (*accountpb.DepositResponse, error) {
+
+	response, err := s.accountService.Deposit(ctx, req.UserId, req.Amount)
+	if err != nil {
+		return &accountpb.DepositResponse{
+			Status:  "failed",
+			Balance: 0,
+		}, err
+	}
+	return &accountpb.DepositResponse{
+		Status:  "completed",
+		Balance: int64(response.NewBalance),
+	}, nil
+}
+
+func (s *Server) Withdraw(ctx context.Context, req *accountpb.WithdrawRequest) (*accountpb.WithdrawResponse, error) {
+	response, err := s.accountService.Withdraw(ctx, req.UserId, req.Amount)
+	if err != nil {
+		return &accountpb.WithdrawResponse{
+			Status:  "failed",
+			Balance: 0,
+		}, nil
+	}
+	return &accountpb.WithdrawResponse{
+		Status:  "completed",
+		Balance: int64(response.NewBalance),
+	}, nil
+}
+
+func (s *Server) Transfer(ctx context.Context, req *accountpb.TransferRequest) (*accountpb.TransferResponse, error) {
+	fromUserBalance, toUserBalance, err := s.accountService.Transfer(ctx, req.UserId, req.RecipientId, req.Amount)
+	if err != nil {
+		return &accountpb.TransferResponse{
+			Status:           "failed",
+			UserBalance:      0,
+			RecipientBalance: 0,
+		}, err
+	}
+	return &accountpb.TransferResponse{
+		Status:           "completed",
+		UserBalance:      int64(fromUserBalance.Balance),
+		RecipientBalance: int64(toUserBalance.Balance),
+	}, nil
+}
+
+func (s *Server) GetBalance(ctx context.Context, req *accountpb.GetBalanceRequest) (*accountpb.GetBalanceResponse, error) {
+	res, err := s.accountService.GetBalance(ctx, req.UserId)
+	if err != nil {
+		return &accountpb.GetBalanceResponse{
+			Balance: 0,
+		}, err
+	}
+	return &accountpb.GetBalanceResponse{
+		Balance: int64(res.Balance),
+	}, nil
 }

@@ -25,6 +25,7 @@ type CreateUser struct {
 	LastName   string
 	MiddleName string
 	Age        uint32
+	Balance    float32
 }
 
 type UpdateUser struct {
@@ -34,4 +35,5 @@ type UpdateUser struct {
 	LastName   string
 	MiddleName string
 	Age        uint32
+	Balance    float32
 }

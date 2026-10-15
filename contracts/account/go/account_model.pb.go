@@ -130,6 +130,7 @@ type UpdateUser struct {
 	MiddleName    string                 `protobuf:"bytes,4,opt,name=middle_name,json=middleName,proto3" json:"middle_name,omitempty"`
 	Email         string                 `protobuf:"bytes,5,opt,name=email,proto3" json:"email,omitempty"`
 	Age           uint32                 `protobuf:"varint,6,opt,name=age,proto3" json:"age,omitempty"`
+	Balance       float32                `protobuf:"fixed32,7,opt,name=balance,proto3" json:"balance,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -202,6 +203,13 @@ func (x *UpdateUser) GetEmail() string {
 func (x *UpdateUser) GetAge() uint32 {
 	if x != nil {
 		return x.Age
+	}
+	return 0
+}
+
+func (x *UpdateUser) GetBalance() float32 {
+	if x != nil {
+		return x.Balance
 	}
 	return 0
 }
@@ -354,7 +362,7 @@ const file_account_model_proto_rawDesc = "" +
 	"middleName\x12\x14\n" +
 	"\x05email\x18\x06 \x01(\tR\x05email\x12\x10\n" +
 	"\x03age\x18\a \x01(\rR\x03age\x12\x18\n" +
-	"\abalance\x18\b \x01(\x02R\abalance\"\xa7\x01\n" +
+	"\abalance\x18\b \x01(\x02R\abalance\"\xc1\x01\n" +
 	"\n" +
 	"UpdateUser\x12\x14\n" +
 	"\x05phone\x18\x01 \x01(\tR\x05phone\x12\x1d\n" +
@@ -364,7 +372,8 @@ const file_account_model_proto_rawDesc = "" +
 	"\vmiddle_name\x18\x04 \x01(\tR\n" +
 	"middleName\x12\x14\n" +
 	"\x05email\x18\x05 \x01(\tR\x05email\x12\x10\n" +
-	"\x03age\x18\x06 \x01(\rR\x03age\"\xf6\x02\n" +
+	"\x03age\x18\x06 \x01(\rR\x03age\x12\x18\n" +
+	"\abalance\x18\a \x01(\x02R\abalance\"\xf6\x02\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x14\n" +
 	"\x05login\x18\x02 \x01(\tR\x05login\x12\x14\n" +
