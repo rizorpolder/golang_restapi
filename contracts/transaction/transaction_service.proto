@@ -1,16 +1,18 @@
 syntax = "proto3";
 package transaction;
+option go_package = "golang_restapi/contracts/transaction/go;transaction";
 
+import "google/protobuf/timestamp.proto";
 import "common/common.proto";
 import "pagination/pagination.proto";
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
+
+import "transaction_model.proto";
 
 service TransactionService{
   rpc Deposit(DepositRequest) returns (common.EmptyResponse);
   rpc Withdraw(WithdrawRequest) returns(common.EmptyResponse);
   rpc Transfer(TransferRequest) returns (common.EmptyResponse);
-  rpc GetTransactions(GetTransactionRequest) returns (GetTransactionResponse);
+  rpc GetTransactions(GetTransactionsRequest) returns (GetTransactionsResponse);
 }
 
 message DepositRequest{
@@ -27,7 +29,7 @@ message TransferRequest{
   uint64 recipient = 3;
 }
 
-message GetTransactionRequest{
+message GetTransactionsRequest{
   optional uint64 user_id = 1;
   optional string type = 2;
   optional string status = 3;
@@ -35,6 +37,6 @@ message GetTransactionRequest{
   optional  google.protobuf.Timestamp date_to = 5;
   optional pagination.Pagination pagination = 6;
 }
-message GetTransactionResponse{
+message GetTransactionsResponse{
   repeated TransactionDetails transactions = 1;
 }

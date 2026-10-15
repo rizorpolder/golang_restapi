@@ -27,7 +27,7 @@ type Repository interface {
 	Transfer(context.Context, model.TransferParams) (model.TransactionDetails, error)
 }
 
-func (s *TransactionService) GetTransactionsWitDetails(ctx context.Context, params model.GetTransactionParams) ([]model.TransactionDetails, error) {
+func (s *TransactionService) GetTransactionsWithDetails(ctx context.Context, params model.GetTransactionParams) ([]model.TransactionDetails, error) {
 	transactions, err := s.repo.GetTransactions(ctx, params)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("failed to get transactions")

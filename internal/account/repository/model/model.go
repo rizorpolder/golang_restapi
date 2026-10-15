@@ -14,6 +14,7 @@ type User struct {
 	CreatedAt  time.Time `gorm:"column:created_at"`
 	UpdatedAt  time.Time `gorm:"column:updated_at"`
 	Balance    float32   `gorm:"column:balance"`
+	IsDeleted  bool      `gorm:"column:is_deleted"`
 }
 
 func (User) TableName() string {

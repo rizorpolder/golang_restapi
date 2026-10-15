@@ -63,6 +63,6 @@ func UpdateUserToRepoUser(user model.UpdateUser) repomodel.User {
 		LastName:   user.LastName,
 		MiddleName: user.MiddleName,
 		Age:        user.Age,
-		Balance:    user, Balance,
+		Balance:    user.Balance,
 	}
 }
