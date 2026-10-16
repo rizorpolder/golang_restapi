@@ -7,7 +7,7 @@ import (
 	transactionpb "golang_restapi/contracts/transaction/go"
 	"golang_restapi/internal/transaction/model"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"time"
+	"strconv"
 )
 
 type Server struct {
@@ -70,14 +70,36 @@ func (s *Server) GetTransactions(ctx context.Context, req *transactionpb.GetTran
 		t := req.DateTo.AsTime()
 		params.DateTo = &t
 	}
-	
+
 	details, err := s.transactionService.GetTransactionsWithDetails(ctx, params)
 	if err != nil {
 		return &transactionpb.GetTransactionsResponse{}, err
 	}
-	transactions := make([]*transactionpb.Transaction, len(details))
+	transactions := make([]*transactionpb.TransactionDetails, len(details))
+
 	for index, detail := range details {
-		//Конвертировать транзакции в pb и отправить
+		transactions[index].Transaction = &transactionpb.Transaction{
+			Id:        detail.Transaction.ID,
+			Type:      string(detail.Transaction.Type),
+			Status:    string(detail.Transaction.Status),
+			CreatedAt: timestamppb.New(detail.Transaction.CreatedAt),
+			UpdatedAt: timestamppb.New(detail.Transaction.UpdatedAt),
+		}
+		entries := make([]*transactionpb.TransactionEntry, len(detail.Entries))
+		for i, entry := range detail.Entries {
+			pbEntry := &transactionpb.TransactionEntry{
+				Id:            entry.ID,
+				TransactionId: entry.TransactionID,
+				AccountId:     strconv.FormatUint(entry.AccountID, 10),
+				Direction:     string(entry.Direction),
+				Amount:        entry.Amount,
+			}
+			entries[i] = pbEntry
+		}
+		transactions[index].Entries = entries
 	}
-	&transactionpb.GetTransactionsResponse{}
+
+	return &transactionpb.GetTransactionsResponse{
+		Transactions: transactions,
+	}, nil
 }

@@ -24,7 +24,7 @@ const (
 
 type Transaction struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Type          string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`     //Transfer|Deposit|Withdraw
 	Status        string                 `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"` // Initiated|Done|Failed
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
@@ -63,11 +63,11 @@ func (*Transaction) Descriptor() ([]byte, []int) {
 	return file_transaction_model_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Transaction) GetId() string {
+func (x *Transaction) GetId() uint64 {
 	if x != nil {
 		return x.Id
 	}
-	return ""
+	return 0
 }
 
 func (x *Transaction) GetType() string {
@@ -100,8 +100,8 @@ func (x *Transaction) GetUpdatedAt() *timestamppb.Timestamp {
 
 type TransactionEntry struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	TransactionId string                 `protobuf:"bytes,2,opt,name=transaction_id,json=transactionId,proto3" json:"transaction_id,omitempty"`
+	Id            uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	TransactionId uint64                 `protobuf:"varint,2,opt,name=transaction_id,json=transactionId,proto3" json:"transaction_id,omitempty"`
 	AccountId     string                 `protobuf:"bytes,3,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	Direction     string                 `protobuf:"bytes,4,opt,name=direction,proto3" json:"direction,omitempty"` //Debit|Credit
 	Amount        float64                `protobuf:"fixed64,5,opt,name=amount,proto3" json:"amount,omitempty"`
@@ -139,18 +139,18 @@ func (*TransactionEntry) Descriptor() ([]byte, []int) {
 	return file_transaction_model_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *TransactionEntry) GetId() string {
+func (x *TransactionEntry) GetId() uint64 {
 	if x != nil {
 		return x.Id
 	}
-	return ""
+	return 0
 }
 
-func (x *TransactionEntry) GetTransactionId() string {
+func (x *TransactionEntry) GetTransactionId() uint64 {
 	if x != nil {
 		return x.TransactionId
 	}
-	return ""
+	return 0
 }
 
 func (x *TransactionEntry) GetAccountId() string {
@@ -232,7 +232,7 @@ const file_transaction_model_proto_rawDesc = "" +
 	"\n" +
 	"\x17transaction_model.proto\x12\vtransaction\x1a\x1fgoogle/protobuf/timestamp.proto\"\xbf\x01\n" +
 	"\vTransaction\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06status\x129\n" +
 	"\n" +
@@ -240,8 +240,8 @@ const file_transaction_model_proto_rawDesc = "" +
 	"\n" +
 	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x9e\x01\n" +
 	"\x10TransactionEntry\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
-	"\x0etransaction_id\x18\x02 \x01(\tR\rtransactionId\x12\x1d\n" +
+	"\x02id\x18\x01 \x01(\x04R\x02id\x12%\n" +
+	"\x0etransaction_id\x18\x02 \x01(\x04R\rtransactionId\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x03 \x01(\tR\taccountId\x12\x1c\n" +
 	"\tdirection\x18\x04 \x01(\tR\tdirection\x12\x16\n" +

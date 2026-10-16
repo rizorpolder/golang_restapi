@@ -7,7 +7,7 @@ option go_package = "golang_restapi/contracts/transaction/go;transaction";
 import "google/protobuf/timestamp.proto";
 
 message Transaction{
-  string id = 1;
+  uint64 id = 1;
   string type = 2; //Transfer|Deposit|Withdraw
   string status = 3;// Initiated|Done|Failed
   google.protobuf.Timestamp created_at = 4;
@@ -15,8 +15,8 @@ message Transaction{
 }
 
 message TransactionEntry{
-  string id = 1;
-  string transaction_id = 2;
+  uint64 id = 1;
+  uint64 transaction_id = 2;
   string account_id = 3;
   string direction = 4; //Debit|Credit
   double amount = 5;
