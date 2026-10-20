@@ -61,6 +61,7 @@ func (r *Repository) GetTransactionDetails(ctx context.Context, transactionId ui
 		Model(&repmodel.Transaction{}).
 		Where("id = ?", transactionId).
 		First(&transaction)
+
 	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 		return model.TransactionDetails{}, fmt.Errorf("transaction %d not found", transactionId)
 	} else if res.Error != nil {
@@ -81,6 +82,50 @@ func (r *Repository) GetTransactionDetails(ctx context.Context, transactionId ui
 		Transaction: mapper.RepoTransactionToTransaction(transaction),
 		Entries:     mapper.RepoTransactionEntriesToTransactionEntries(entries),
 	}, nil
+}
+func (r *Repository) Deposit(ctx context.Context, params model.DepositParams) (model.TransactionDetails, error) {
+	var result model.TransactionDetails
+	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		transaction := model.Transaction{
+			UserID: params.UserID,
+			Amount: int64(params.Amount * 100),
+			Status: model.TransactionStatusPending,
+			Type:   model.TransactionTypeDeposit,
+		}
+
+		transactionRepo := mapper.TransactionToRepoTransaction(transaction)
+		res := tx.Clauses(clause.OnConflict{UpdateAll: true}).Create(&transactionRepo)
+		if res.Error != nil {
+			r.logger.Err(res.Error).Msg("failed create transaction deposit")
+			return fmt.Errorf("failed to create transaction: %w", res.Error)
+		}
+
+		entry := model.TransactionEntry{
+			TransactionID: transaction.ID,
+			AccountID:     params.UserID,
+			Direction:     model.TransactionEntryDirectionDebit,
+			Amount:        params.Amount,
+		}
+
+		entryRepo := mapper.TransactionEntryToRepoTransactionEntry(entry)
+		res = tx.Clauses(clause.OnConflict{UpdateAll: true}).Create(&entryRepo)
+		if res.Error != nil {
+			r.logger.Err(res.Error).Msg("failed create transaction entry in deposit")
+			return fmt.Errorf("failed to create transaction entry: %w", res.Error)
+		}
+
+		transactionRepo.Status = string(model.TransactionStatusPending)
+		result = model.TransactionDetails{
+			Transaction: mapper.RepoTransactionToTransaction(transactionRepo),
+			Entries:     []model.TransactionEntry{mapper.RepoTransactionEntryToTransactionEntry(entryRepo)},
+		}
+		return nil
+	})
+
+	if err != nil {
+		return model.TransactionDetails{}, err
+	}
+	return result, nil
 }
 
 func (r *Repository) Withdraw(ctx context.Context, params model.WithdrawParams) (model.TransactionDetails, error) {
@@ -114,14 +159,7 @@ func (r *Repository) Withdraw(ctx context.Context, params model.WithdrawParams) 
 			return fmt.Errorf("failed to create withdraw transaction entry: %w", res.Error)
 		}
 
-		updateData := mapper.UpdateTransactionToRepoTransaction(model.UpdateTransaction{Status: model.TransactionStatusCompleted})
-		res = tx.Where("id =?", transactionRepo.ID).Updates(&updateData)
-		if res.Error != nil {
-			r.logger.Err(res.Error).Msg("failed to update withdraw transaction entry")
-			return fmt.Errorf("failed to update withdraw transaction entry: %w", res.Error)
-		}
-
-		transactionRepo.Status = string(model.TransactionStatusCompleted)
+		transactionRepo.Status = string(model.TransactionStatusPending)
 		result = model.TransactionDetails{
 			Transaction: mapper.RepoTransactionToTransaction(transactionRepo),
 			Entries: []model.TransactionEntry{
@@ -131,65 +169,12 @@ func (r *Repository) Withdraw(ctx context.Context, params model.WithdrawParams) 
 		return nil
 	})
 	if err != nil {
-		return model.TransactionDetails{}, fmt.Errorf("failed to create withdraw transaction: %w", err)
-	}
-
-	return result, nil
-}
-
-func (r *Repository) Deposit(ctx context.Context, params model.DepositParams) (model.TransactionDetails, error) {
-	var result model.TransactionDetails
-	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		transaction := model.Transaction{
-			UserID: params.UserID,
-			Amount: int64(params.Amount * 100),
-			Status: model.TransactionStatusPending,
-			Type:   model.TransactionTypeDeposit,
-		}
-
-		transactionRepo := mapper.TransactionToRepoTransaction(transaction)
-		res := tx.Clauses(clause.OnConflict{UpdateAll: true}).Create(&transactionRepo)
-		if res.Error != nil {
-			r.logger.Err(res.Error).Msg("failed create transaction deposit")
-			return fmt.Errorf("failed to create transaction: %w", res.Error)
-		}
-
-		entry := model.TransactionEntry{
-			TransactionID: transaction.ID,
-			AccountID:     params.UserID,
-			Direction:     model.TransactionEntryDirectionDebit,
-			Amount:        params.Amount,
-		}
-
-		entryRepo := mapper.TransactionEntryToRepoTransactionEntry(entry)
-		res = tx.Clauses(clause.OnConflict{UpdateAll: true}).Create(&entryRepo)
-		if res.Error != nil {
-			r.logger.Err(res.Error).Msg("failed create transaction entry in deposit")
-			return fmt.Errorf("failed to create transaction entry: %w", res.Error)
-		}
-
-		updateData := mapper.UpdateTransactionToRepoTransaction(model.UpdateTransaction{
-			Status: model.TransactionStatusCompleted,
-		})
-
-		res = tx.Where("id = ?", transaction.ID).Updates(&updateData)
-		if res.Error != nil {
-			r.logger.Err(res.Error).Msg("failed update transaction entry in deposit")
-			return fmt.Errorf("failed to update transaction entry: %w", res.Error)
-		}
-
-		transactionRepo.Status = string(model.TransactionStatusCompleted)
-		result = model.TransactionDetails{
-			Transaction: mapper.RepoTransactionToTransaction(transactionRepo),
-			Entries:     []model.TransactionEntry{mapper.RepoTransactionEntryToTransactionEntry(entryRepo)},
-		}
-		return nil
-	})
-	if err != nil {
 		return model.TransactionDetails{}, err
 	}
+
 	return result, nil
 }
+
 func (r *Repository) Transfer(ctx context.Context, params model.TransferParams) (model.TransactionDetails, error) {
 	var result model.TransactionDetails
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -233,15 +218,7 @@ func (r *Repository) Transfer(ctx context.Context, params model.TransferParams) 
 			return fmt.Errorf("failed to create debit transaction entry: %w", res.Error)
 		}
 
-		updateData := mapper.UpdateTransactionToRepoTransaction(model.UpdateTransaction{
-			Status: model.TransactionStatusCompleted,
-		})
-		res = tx.Where("id = ?", transactionRepo.ID).Updates(&updateData)
-		if res.Error != nil {
-			r.logger.Err(res.Error).Msg("failed update transaction entry in transfer")
-			return fmt.Errorf("failed to update transaction entry: %w", res.Error)
-		}
-		transactionRepo.Status = string(model.TransactionStatusCompleted)
+		transactionRepo.Status = string(model.TransactionStatusPending)
 		result = model.TransactionDetails{
 			Transaction: mapper.RepoTransactionToTransaction(transactionRepo),
 			Entries: []model.TransactionEntry{
@@ -255,4 +232,22 @@ func (r *Repository) Transfer(ctx context.Context, params model.TransferParams) 
 		return model.TransactionDetails{}, err
 	}
 	return result, nil
+}
+
+func (r *Repository) UpdateTransactionStatus(ctx context.Context, transactionID uint64, status model.TransactionStatus) error {
+	updateData := mapper.UpdateTransactionToRepoTransaction(model.UpdateTransaction{Status: status})
+	res := r.db.WithContext(ctx).
+		Model(&repmodel.Transaction{}).
+		Where("id = ?", transactionID).
+		Updates(&updateData)
+
+	if res.Error != nil {
+		r.logger.Err(res.Error).Uint64("transaction_id", transactionID).Str("status", string(status)).Msg("failed to update transaction status")
+		return fmt.Errorf("failed to update transaction status: %w", res.Error)
+	}
+
+	if res.RowsAffected == 0 {
+		return fmt.Errorf("failed to update transaction status: %w", res.Error)
+	}
+	return nil
 }

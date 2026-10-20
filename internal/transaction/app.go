@@ -6,15 +6,21 @@ import (
 	"fmt"
 	"github.com/pressly/goose/v3"
 	"github.com/rs/zerolog"
+	accountpb "golang_restapi/contracts/account/go"
 	transactionpb "golang_restapi/contracts/transaction/go"
+	"golang_restapi/internal/transaction/account"
 	"golang_restapi/internal/transaction/config"
 	"golang_restapi/internal/transaction/repository"
 	"golang_restapi/internal/transaction/server"
 	"golang_restapi/internal/transaction/service"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"net"
+
+	_ "github.com/lib/pq"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 )
 
 const migrationsDir = "internal/transaction/migrations"
@@ -26,6 +32,8 @@ type App struct {
 	transactionService *service.TransactionService
 	transactionServer  *server.Server
 	grpcServer         *grpc.Server
+
+	accountService *account.Service
 }
 
 func New(logger *zerolog.Logger, cfg *config.Config) *App {
@@ -79,15 +87,33 @@ func (a *App) getTransactionServer(ctx context.Context) (*server.Server, error) 
 }
 
 func (a *App) getTransactionService(ctx context.Context) (*service.TransactionService, error) {
-	if a.transactionRepo == nil {
+	if a.transactionService == nil {
 		repo, err := a.getTransactionRepository(ctx)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get transaction repository: %w", err)
 		}
-		a.transactionService = service.New(repo, a.logger)
+		accountSvc, err := a.getAccountService(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get account service: %w", err)
+		}
+
+		a.transactionService = service.New(repo, *accountSvc, a.logger)
 	}
 	return a.transactionService, nil
 }
+
+func (a *App) getAccountService(ctx context.Context) (*account.Service, error) {
+	if a.accountService == nil {
+		conn, err := grpc.NewClient(a.cfg.AccountGrpcHost, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		if err != nil {
+			return nil, fmt.Errorf("could not create grpc client: %w", err)
+		}
+		client := accountpb.NewAccountClient(conn)
+		a.accountService = account.New(client)
+	}
+	return a.accountService, nil
+}
+
 func getGrpcServer(transactionServer *server.Server) *grpc.Server {
 	grpcServer := grpc.NewServer()
 	transactionpb.RegisterTransactionServiceServer(grpcServer, transactionServer)
