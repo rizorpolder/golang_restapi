@@ -12,6 +12,7 @@ require (
 	github.com/lib/pq v1.12.3
 	github.com/pressly/goose/v3 v3.28.0
 	github.com/rs/zerolog v1.35.1
+	github.com/segmentio/kafka-go v0.4.51
 	github.com/swaggo/swag v1.16.6
 	golang.org/x/crypto v0.56.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260904194346-d0f1323225a4
@@ -51,6 +52,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/klauspost/compress v1.19.2 // indirect
 	github.com/klauspost/cpuid/v2 v2.4.0 // indirect
 	github.com/leodido/go-urn v1.5.0 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
@@ -59,6 +61,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
+	github.com/pierrec/lz4/v4 v4.1.29 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.62.0 // indirect
 	github.com/sethvargo/go-retry v0.4.0 // indirect
