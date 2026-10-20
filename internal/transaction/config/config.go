@@ -7,10 +7,12 @@ import (
 
 type Config struct {
 	config.Base
-	GRPCHost        string `env:"GRPC_HOST" json:"host" required:"true" default:"localhost"`
-	GRPCPort        string `env:"GRPC_PORT" json:"port" required:"true" default:"9000"`
-	DBDSN           string `env:"DB_DSN" json:"db_dnt" required:"true"`
-	AccountGrpcHost string `env:"ACCOUNT_GRPC_HOST" json:"account_grpc_host" required:"true"`
+	GRPCHost              string   `env:"GRPC_HOST" json:"host" required:"true" default:"localhost"`
+	GRPCPort              string   `env:"GRPC_PORT" json:"port" required:"true" default:"9000"`
+	DBDSN                 string   `env:"DB_DSN" json:"db_dnt" required:"true"`
+	AccountGrpcHost       string   `env:"ACCOUNT_GRPC_HOST" json:"account_grpc_host" required:"true"`
+	KafkaBrokers          []string `env:"KAFKA_BROKERS_HOST" envSeparator:","  json:"kafka_brokers" required:"true"`
+	KafkaTransactionTopic string   `env:"KAFKA_TRANSACTION_TOPIC" json:"kafka_transaction_topic" required:"true"`
 }
 
 func Load() (*Config, error) {

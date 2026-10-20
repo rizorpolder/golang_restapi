@@ -4,20 +4,23 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/pressly/goose/v3"
-	"github.com/rs/zerolog"
 	accountpb "golang_restapi/contracts/account/go"
 	transactionpb "golang_restapi/contracts/transaction/go"
+	kafkaConfig "golang_restapi/internal/kafka/config"
+	kafka "golang_restapi/internal/kafka/transaction"
 	"golang_restapi/internal/transaction/account"
 	"golang_restapi/internal/transaction/config"
 	"golang_restapi/internal/transaction/repository"
 	"golang_restapi/internal/transaction/server"
 	"golang_restapi/internal/transaction/service"
+	"net"
+
+	"github.com/pressly/goose/v3"
+	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"net"
 
 	_ "github.com/lib/pq"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
@@ -34,6 +37,7 @@ type App struct {
 	grpcServer         *grpc.Server
 
 	accountService *account.Service
+	kafkaClient    *kafka.Kafka
 }
 
 func New(logger *zerolog.Logger, cfg *config.Config) *App {
@@ -92,14 +96,33 @@ func (a *App) getTransactionService(ctx context.Context) (*service.TransactionSe
 		if err != nil {
 			return nil, fmt.Errorf("failed to get transaction repository: %w", err)
 		}
+
 		accountSvc, err := a.getAccountService(ctx)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get account service: %w", err)
 		}
 
-		a.transactionService = service.New(repo, *accountSvc, a.logger)
+		kafkaClient, err := a.getKafkaClient(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get kafka client: %w", err)
+		}
+
+		a.transactionService = service.New(repo, accountSvc, kafkaClient, a.logger)
+		a.kafkaClient.Subscribe(ctx, "transaction_response", a.transactionService.HandleAccountResponse)
 	}
 	return a.transactionService, nil
+}
+
+func (a *App) getKafkaClient(ctx context.Context) (*kafka.Kafka, error) {
+	if a.kafkaClient == nil {
+		producerCfg := kafkaConfig.DefaultProducerConfig(a.cfg.KafkaBrokers)
+		producer := kafka.NewProducer(producerCfg, a.logger)
+
+		kafkaClient := kafka.New(producer, a.cfg.KafkaBrokers, a.cfg.KafkaGroupID, a.logger)
+		a.kafkaClient = kafkaClient
+		a.logger.Info().Msg("kafka client created")
+	}
+	return a.kafkaClient, nil
 }
 
 func (a *App) getAccountService(ctx context.Context) (*account.Service, error) {

@@ -1,8 +1,9 @@
 package config
 
 import (
-	"github.com/segmentio/kafka-go"
 	"time"
+
+	"github.com/segmentio/kafka-go"
 )
 
 type Config struct {
@@ -22,8 +23,8 @@ type ConsumerConfig struct {
 	Brokers           []string
 	GroupID           string
 	Topics            []string
-	MinBytes          int64
-	MaxBytes          int64
+	MinBytes          int
+	MaxBytes          int
 	MaxWaitTime       time.Duration
 	ReadBatchTimeout  time.Duration
 	HeartbeatInterval time.Duration
@@ -38,6 +39,16 @@ func DefaultProducerConfig(brokers []string) ProducerConfig {
 		RequiredAcks: kafka.RequireOne,
 	}
 }
-func DefaultConsumerConfig(brokers []string, groupID string) ConsumerConfig {
-	return ConsumerConfig{}
+func DefaultConsumerConfig(brokers []string, groupID string, topics []string) ConsumerConfig {
+	return ConsumerConfig{
+		Brokers:           brokers,
+		GroupID:           groupID,
+		Topics:            topics,
+		MinBytes:          10e3,
+		MaxBytes:          10e6,
+		MaxWaitTime:       1 * time.Second,
+		ReadBatchTimeout:  1 * time.Second,
+		HeartbeatInterval: 1 * time.Second,
+		CommitInterval:    time.Second,
+	}
 }
