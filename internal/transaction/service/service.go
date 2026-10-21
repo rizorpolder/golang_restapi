@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"golang_restapi/internal/transaction/config"
 	"golang_restapi/internal/transaction/model"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 )
 
 type TransactionService struct {
+	cfg    *config.Config
 	repo   Repository
 	logger *zerolog.Logger
 
@@ -18,9 +20,10 @@ type TransactionService struct {
 	kafkaPublisher KafkaPublisher
 }
 
-func New(repo Repository, accountService AccountService, kafkaPublisher KafkaPublisher, logger *zerolog.Logger) *TransactionService {
+func New(repo Repository, accountService AccountService, kafkaPublisher KafkaPublisher, cfg *config.Config, logger *zerolog.Logger) *TransactionService {
 	return &TransactionService{
 		repo:           repo,
+		cfg:            cfg,
 		accountService: accountService,
 		kafkaPublisher: kafkaPublisher,
 		logger:         logger,
@@ -144,7 +147,7 @@ func (s *TransactionService) Transfer(ctx context.Context, userId, recipient uin
 }
 
 func (s *TransactionService) tryPublishToKafka(ctx context.Context, res model.TransactionDetails, userId uint64, request map[string]interface{}) (model.TransactionDetails, error) {
-	err := s.kafkaPublisher.Publish(ctx, "transaction_request", fmt.Sprintf("%d", userId), request)
+	err := s.kafkaPublisher.Publish(ctx, s.cfg.KafkaPublishTopic, fmt.Sprintf("%d", userId), request)
 	if err != nil {
 		s.logger.Error().Uint64("user_id", userId).Uint64("transaction_id", res.Transaction.ID).Msg("failed to publish transaction")
 		updateErr := s.repo.UpdateTransactionStatus(ctx, res.Transaction.ID, model.TransactionStatusFailed)

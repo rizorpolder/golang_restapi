@@ -5,10 +5,14 @@ import (
 	"golang_restapi/internal/logger"
 	app "golang_restapi/internal/transaction"
 	"golang_restapi/internal/transaction/config"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
-	ctx := context.Background()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)

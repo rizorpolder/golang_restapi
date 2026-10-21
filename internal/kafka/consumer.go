@@ -67,6 +67,10 @@ func (c *Consumer) Start(ctx context.Context, handler ConsumerMessageHandler) er
 					Int("partition", msg.Partition).
 					Int64("offset", msg.Offset).
 					Msg("message successfully processed")
+
+			}
+			if err := c.reader.CommitMessages(ctx, msg); err != nil {
+				c.logger.Error().Err(err).Msg("failed to commit kafka message")
 			}
 		}
 	}

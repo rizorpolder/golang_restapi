@@ -10,7 +10,7 @@ import (
 )
 
 type Client interface {
-	Publish(ctx context.Context, topic string, data interface{}) error
+	Publish(ctx context.Context, topic string, key string, data interface{}) error
 	Subscribe(ctx context.Context, topic string, handler MessageHandler) error
 	Close() error
 }
@@ -42,6 +42,13 @@ func (k *Kafka) Subscribe(ctx context.Context, topic string, handler MessageHand
 	consumer := NewConsumer(cfg, k.logger)
 
 	go func() {
+
+		defer func() {
+			if err := consumer.Close(); err != nil {
+				k.logger.Error().Err(err).Str("topic", topic).Msg("failed to close kafka consumer")
+			}
+		}()
+
 		k.logger.Info().
 			Str("topic", topic).
 			Str("groupId", uniqGroupID).
@@ -50,6 +57,7 @@ func (k *Kafka) Subscribe(ctx context.Context, topic string, handler MessageHand
 		messageHandler := ConsumerMessageHandler(func(ctx context.Context, msg kafka.Message) error {
 			return handler(ctx, msg.Topic, string(msg.Key), msg.Value)
 		})
+
 		_ = consumer.Start(ctx, messageHandler)
 
 	}()

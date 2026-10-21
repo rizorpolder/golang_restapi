@@ -109,8 +109,8 @@ func (a *App) getTransactionService(ctx context.Context) (*service.TransactionSe
 			return nil, fmt.Errorf("failed to get kafka client: %w", err)
 		}
 
-		a.transactionService = service.New(repo, grpcSvc, kafkaClient, a.logger)
-		a.kafkaClient.Subscribe(ctx, "transaction_response", a.transactionService.HandleAccountResponse)
+		a.transactionService = service.New(repo, grpcSvc, kafkaClient, a.cfg, a.logger)
+		a.kafkaClient.Subscribe(ctx, a.cfg.KafkaSubscribeTopic, a.transactionService.HandleAccountResponse)
 	}
 	return a.transactionService, nil
 }
@@ -168,7 +168,7 @@ func (a *App) runMigrations(ctx context.Context) error {
 		return fmt.Errorf("failed to open db: %w", err)
 	}
 	if err := goose.UpContext(ctx, dbGoose, migrationsDir); err != nil {
-		fmt.Printf("failed to run migrations: %s\n", err)
+		return fmt.Errorf("failed to run migrations: %w", err)
 	}
 	return nil
 

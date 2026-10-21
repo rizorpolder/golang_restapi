@@ -5,6 +5,9 @@ import (
 	app "golang_restapi/internal/auth"
 	"golang_restapi/internal/auth/config"
 	"golang_restapi/internal/logger"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 // @title Auth Service
@@ -13,7 +16,8 @@ import (
 // @host localhost:50051
 // @BasePath /
 func main() {
-	ctx := context.Background()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)

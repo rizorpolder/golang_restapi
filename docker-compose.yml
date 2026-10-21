@@ -125,6 +125,7 @@ services:
     env_file: configs/account.env
     environment:
       DB_DSN: host=account-db port=5432 user=postgres password=${ACCOUNT_DB_PASSWORD} dbname=account_db sslmode=disable
+      KAFKA_BROKER_HOST: kafka:9092
     ports:
       - "50053:50053"
     depends_on:
@@ -142,6 +143,8 @@ services:
     env_file: configs/transaction.env
     environment:
       DB_DSN: host=transaction-db port=5432 user=postgres password=${TRANSACTION_DB_PASSWORD} dbname=transaction_db sslmode=disable
+      KAFKA_BROKER_HOST: kafka:9092
+      ACCOUNT_GRPC_HOST: account:50053
     ports:
       - "50054:50054"
     depends_on:
@@ -160,6 +163,7 @@ services:
     environment:
       AUTH_ADDR: auth:50052
       ACCOUNT_ADDR: account:50053
+      JWT_SECRET: ${JWT_SECRET}
     ports:
       - "9000:9000"
     depends_on:

@@ -2,10 +2,14 @@ package main
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
 	app "golang_restapi/internal/account"
 	"golang_restapi/internal/account/config"
 	"golang_restapi/internal/logger"
+	"os"
+	"os/signal"
+	"syscall"
+
+	"github.com/gin-gonic/gin"
 	//_ "golang_restapi/docs"
 	//swaggerFiles "github.com/swaggo/files"
 	//ginSwagger "github.com/swaggo/gin-swagger"
@@ -18,7 +22,8 @@ import (
 // @BasePath /
 func main() {
 
-	ctx := context.Background()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)

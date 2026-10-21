@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 	"fmt"
-	"github.com/rs/zerolog"
 	"net"
 
-	_ "github.com/lib/pq"
+	"github.com/rs/zerolog"
+
 	accountpb "golang_restapi/contracts/account/go"
 	authbp "golang_restapi/contracts/auth/go"
 	gatewaypb "golang_restapi/contracts/gateway/go"
@@ -16,6 +16,8 @@ import (
 	"golang_restapi/internal/gateway/server"
 	"golang_restapi/internal/gateway/service"
 	"golang_restapi/internal/interceptor"
+
+	_ "github.com/lib/pq"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -33,7 +35,7 @@ type App struct {
 	grpcServer *grpc.Server
 }
 
-func NewApp(logger *zerolog.Logger, cfg *config.Config) *App {
+func New(logger *zerolog.Logger, cfg *config.Config) *App {
 	return &App{
 		cfg:    cfg,
 		logger: logger,

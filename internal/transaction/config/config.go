@@ -7,13 +7,14 @@ import (
 
 type Config struct {
 	config.Base
-	GRPCHost              string   `env:"GRPC_HOST" json:"host" required:"true" default:"localhost"`
-	GRPCPort              string   `env:"GRPC_PORT" json:"port" required:"true" default:"9000"`
-	DBDSN                 string   `env:"DB_DSN" json:"db_dnt" required:"true"`
-	AccountGrpcHost       string   `env:"ACCOUNT_GRPC_HOST" json:"account_grpc_host" required:"true"`
-	KafkaBrokers          []string `env:"KAFKA_BROKER_HOST" envSeparator:","  json:"kafka_broker" required:"true"`
-	KafkaGroupID          string   `env:"KAFKA_CONSUMER_GROUP" json:"kafka_consumer_group" required:"true"`
-	KafkaTransactionTopic string   `env:"KAFKA_TRANSACTION_TOPIC" json:"kafka_transaction_topic" required:"true"`
+	GRPCHost            string   `env:"GRPC_HOST,required" json:"host"  envDefault:"0.0.0.0"`
+	GRPCPort            string   `env:"GRPC_PORT,required" json:"port" envDefault:"50054"`
+	DBDSN               string   `env:"DB_DSN,required" json:"db_dnt"`
+	AccountGrpcHost     string   `env:"ACCOUNT_GRPC_HOST,required" json:"account_grpc_host"`
+	KafkaBrokers        []string `env:"KAFKA_BROKER_HOST,required" envSeparator:","  json:"kafka_broker"`
+	KafkaGroupID        string   `env:"KAFKA_CONSUMER_GROUP,required" json:"kafka_consumer_group"`
+	KafkaPublishTopic   string   `env:"KAFKA_PUBLISH_TOPIC,required" json:"kafka_publish_topic"`
+	KafkaSubscribeTopic string   `env:"KAFKA_SUBSCRIBE_TOPIC,required" json:"kafka_subscribe_topic"`
 }
 
 func Load() (*Config, error) {

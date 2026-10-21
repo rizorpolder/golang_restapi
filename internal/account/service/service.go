@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"golang_restapi/internal/account/config"
 	"golang_restapi/internal/account/model"
 	"strconv"
 	"time"
@@ -13,12 +14,13 @@ import (
 
 type AccountService struct {
 	repo           Repository
+	cfg            *config.Config
 	logger         *zerolog.Logger
 	kafkaPublisher KafkaPublisher
 }
 
-func New(repo Repository, kafkaPublisher KafkaPublisher, logger *zerolog.Logger) *AccountService {
-	return &AccountService{repo: repo, kafkaPublisher: kafkaPublisher, logger: logger}
+func New(repo Repository, kafkaPublisher KafkaPublisher, cfg *config.Config, logger *zerolog.Logger) *AccountService {
+	return &AccountService{repo: repo, kafkaPublisher: kafkaPublisher, cfg: cfg, logger: logger}
 }
 
 type TransactionRequest struct {
@@ -243,10 +245,10 @@ func (s *AccountService) HandleTransaction(ctx context.Context, topic string, ke
 			Uint64("userID", res.UserID).
 			Uint64("operationID", res.OperationID).
 			Msg("failed to handle transaction")
-		s.kafkaPublisher.Publish(ctx, "transaction_response", "key", result)
+		s.kafkaPublisher.Publish(ctx, s.cfg.KafkaPublishTopic, strconv.FormatUint(res.UserID, 10), result)
 		return fmt.Errorf("failed to handle transaction: %w", err)
 	}
 	result["result"] = true
-	s.kafkaPublisher.Publish(ctx, "transaction_response", strconv.FormatUint(res.UserID, 10), result)
+	s.kafkaPublisher.Publish(ctx, s.cfg.KafkaPublishTopic, strconv.FormatUint(res.UserID, 10), result)
 	return nil
 }

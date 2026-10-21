@@ -13,7 +13,6 @@ FROM alpine:3.22
 WORKDIR /app
 
 COPY --from=build /out/gateway ./gateway
-COPY internal/gateway/migrations ./internal/gateway/migrations
 
-EXPOSE 50050
+EXPOSE 9000
 ENTRYPOINT ["./gateway"]

@@ -26,12 +26,13 @@ type Message struct {
 
 func NewProducer(cfg config.ProducerConfig, logger *zerolog.Logger) *Producer {
 	writer := &kafka.Writer{
-		Addr:         kafka.TCP(cfg.Brokers...),
-		Balancer:     &kafka.LeastBytes{},
-		BatchSize:    cfg.BatchSize,
-		BatchTimeout: cfg.BatchTimeout,
-		RequiredAcks: cfg.RequiredAcks,
-		Async:        false,
+		Addr:                   kafka.TCP(cfg.Brokers...),
+		Balancer:               &kafka.LeastBytes{},
+		BatchSize:              cfg.BatchSize,
+		BatchTimeout:           cfg.BatchTimeout,
+		RequiredAcks:           cfg.RequiredAcks,
+		Async:                  false,
+		AllowAutoTopicCreation: true,
 	}
 	return &Producer{
 		writer: writer,

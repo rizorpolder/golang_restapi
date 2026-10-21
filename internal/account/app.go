@@ -117,8 +117,8 @@ func (a *App) getAccountService(ctx context.Context) (*service.AccountService, e
 			return nil, fmt.Errorf("failed to get kafka client: %w", err)
 		}
 
-		a.accountService = service.New(repo, kafkaClient, a.logger)
-		a.kafkaClient.Subscribe(ctx, a.cfg.KafkaTransactionTopic, a.accountService.HandleTransaction)
+		a.accountService = service.New(repo, kafkaClient, a.cfg, a.logger)
+		a.kafkaClient.Subscribe(ctx, a.cfg.KafkaSubscribeTopic, a.accountService.HandleTransaction)
 	}
 	return a.accountService, nil
 }
