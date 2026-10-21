@@ -4,20 +4,24 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/pressly/goose/v3"
-	"github.com/rs/zerolog"
 	accountpb "golang_restapi/contracts/account/go"
 	"golang_restapi/internal/account/config"
 	"golang_restapi/internal/account/repository"
 	"golang_restapi/internal/account/server"
 	"golang_restapi/internal/account/service"
+	"golang_restapi/internal/kafka"
+	kafkaKonfig "golang_restapi/internal/kafka/config"
+	"net"
+
+	"github.com/pressly/goose/v3"
+	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"net"
+
+	_ "golang_restapi/internal/account/migrations"
 
 	_ "github.com/lib/pq"
-	_ "golang_restapi/internal/account/migrations"
 )
 
 const migrationsDir = "internal/account/migrations"
@@ -29,6 +33,7 @@ type App struct {
 	accountService *service.AccountService
 	accountServer  *server.Server
 	grpcServer     *grpc.Server
+	kafkaClient    *kafka.Kafka
 }
 
 func New(logger *zerolog.Logger, cfg *config.Config) *App {
@@ -107,9 +112,27 @@ func (a *App) getAccountService(ctx context.Context) (*service.AccountService, e
 		if err != nil {
 			return nil, fmt.Errorf("failed to get repository: %w", err)
 		}
-		a.accountService = service.New(repo, a.logger)
+		kafkaClient, err := a.getKafkaClient(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get kafka client: %w", err)
+		}
+
+		a.accountService = service.New(repo, kafkaClient, a.logger)
+		a.kafkaClient.Subscribe(ctx, a.cfg.KafkaTransactionTopic, a.accountService.HandleTransaction)
 	}
 	return a.accountService, nil
+}
+
+func (a *App) getKafkaClient(ctx context.Context) (*kafka.Kafka, error) {
+	if a.kafkaClient == nil {
+		producerCfg := kafkaKonfig.DefaultProducerConfig(a.cfg.KafkaBrokers)
+		producer := kafka.NewProducer(producerCfg, a.logger)
+
+		kafkaClient := kafka.New(producer, a.cfg.KafkaBrokers, a.cfg.KafkaGroupID, a.logger)
+		a.kafkaClient = kafkaClient
+		a.logger.Info().Msgf("kafka client created")
+	}
+	return a.kafkaClient, nil
 }
 
 func (a *App) getAccountServer(ctx context.Context) (*server.Server, error) {
@@ -130,8 +153,18 @@ func getGRPCServer(accountServer *server.Server) *grpc.Server {
 }
 
 func (a *App) Close(ctx context.Context) error {
+	var errs []error
 	if a.grpcServer != nil {
 		a.grpcServer.GracefulStop()
+	}
+
+	if a.kafkaClient != nil {
+		if err := a.kafkaClient.Close(); err != nil {
+			errs = append(errs, fmt.Errorf("failed to close kafka client: %w", err))
+		}
+	}
+	if len(errs) > 0 {
+		return fmt.Errorf("error closing application: %w", errs)
 	}
 	return nil
 }

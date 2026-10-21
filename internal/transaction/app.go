@@ -6,8 +6,8 @@ import (
 	"fmt"
 	accountpb "golang_restapi/contracts/account/go"
 	transactionpb "golang_restapi/contracts/transaction/go"
+	"golang_restapi/internal/kafka"
 	kafkaConfig "golang_restapi/internal/kafka/config"
-	kafka "golang_restapi/internal/kafka/transaction"
 	"golang_restapi/internal/transaction/account"
 	"golang_restapi/internal/transaction/config"
 	"golang_restapi/internal/transaction/repository"
@@ -97,7 +97,7 @@ func (a *App) getTransactionService(ctx context.Context) (*service.TransactionSe
 			return nil, fmt.Errorf("failed to get transaction repository: %w", err)
 		}
 
-		accountSvc, err := a.getAccountService(ctx)
+		grpcSvc, err := a.getAccountService(ctx)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get account service: %w", err)
 		}
@@ -107,7 +107,7 @@ func (a *App) getTransactionService(ctx context.Context) (*service.TransactionSe
 			return nil, fmt.Errorf("failed to get kafka client: %w", err)
 		}
 
-		a.transactionService = service.New(repo, accountSvc, kafkaClient, a.logger)
+		a.transactionService = service.New(repo, grpcSvc, kafkaClient, a.logger)
 		a.kafkaClient.Subscribe(ctx, "transaction_response", a.transactionService.HandleAccountResponse)
 	}
 	return a.transactionService, nil
@@ -172,8 +172,19 @@ func (a *App) runMigrations(ctx context.Context) error {
 
 }
 func (a *App) Close(ctx context.Context) error {
+	var errs []error
 	if a.grpcServer != nil {
 		a.grpcServer.GracefulStop()
+	}
+
+	if a.kafkaClient != nil {
+		if err := a.kafkaClient.Close(); err != nil {
+			errs = append(errs, fmt.Errorf("failed to close kafka client: %w", err))
+		}
+	}
+
+	if len(errs) > 0 {
+		fmt.Printf("failed to close application: %v", errs)
 	}
 	return nil
 }

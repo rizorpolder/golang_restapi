@@ -12,6 +12,7 @@ type Config struct {
 	DBDSN                 string   `env:"DB_DSN" json:"db_dnt" required:"true"`
 	AccountGrpcHost       string   `env:"ACCOUNT_GRPC_HOST" json:"account_grpc_host" required:"true"`
 	KafkaBrokers          []string `env:"KAFKA_BROKERS_HOST" envSeparator:","  json:"kafka_brokers" required:"true"`
+	KafkaGroupID          string   `env:"KAFKA_CONSUMER_GROUP" json:"kafka_consumer_group" required:"true"`
 	KafkaTransactionTopic string   `env:"KAFKA_TRANSACTION_TOPIC" json:"kafka_transaction_topic" required:"true"`
 }
 

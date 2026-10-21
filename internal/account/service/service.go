@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/rs/zerolog"
 	"golang_restapi/internal/account/model"
+	"strconv"
 	"time"
+
+	"github.com/rs/zerolog"
 )
 
 type AccountService struct {
@@ -15,8 +17,8 @@ type AccountService struct {
 	kafkaPublisher KafkaPublisher
 }
 
-func New(repo Repository, logger *zerolog.Logger) *AccountService {
-	return &AccountService{repo: repo, logger: logger}
+func New(repo Repository, kafkaPublisher KafkaPublisher, logger *zerolog.Logger) *AccountService {
+	return &AccountService{repo: repo, kafkaPublisher: kafkaPublisher, logger: logger}
 }
 
 type TransactionRequest struct {
@@ -210,14 +212,14 @@ func (s *AccountService) Transfer(ctx context.Context, fromUserID, toUserID uint
 	return fromBalance, toBalance, nil
 }
 
-func (s *AccountService) HandleTransaction(ctx context.Context, topic string, key, string, data []byte) error {
+func (s *AccountService) HandleTransaction(ctx context.Context, topic string, key string, data []byte) error {
 	s.logger.Info().Msg("handling transaction request")
 	var res TransactionRequest
 	var err error
 
 	err = json.Unmarshal(data, &res)
 	if err != nil {
-		fmt.Errorf("failed to unmarshal json: %w", err)
+		return fmt.Errorf("failed to unmarshal json: %w", err)
 	}
 
 	result := map[string]interface{}{
@@ -242,5 +244,9 @@ func (s *AccountService) HandleTransaction(ctx context.Context, topic string, ke
 			Uint64("operationID", res.OperationID).
 			Msg("failed to handle transaction")
 		s.kafkaPublisher.Publish(ctx, "transaction_response", "key", result)
+		return fmt.Errorf("failed to handle transaction: %w", err)
 	}
+	result["result"] = true
+	s.kafkaPublisher.Publish(ctx, "transaction_response", strconv.FormatUint(res.UserID, 10), result)
+	return nil
 }

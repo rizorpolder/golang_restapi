@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"golang_restapi/internal/transaction/account"
 	"golang_restapi/internal/transaction/model"
 	"time"
 
@@ -15,11 +14,11 @@ type TransactionService struct {
 	repo   Repository
 	logger *zerolog.Logger
 
-	accountService account.Service
+	accountService AccountService
 	kafkaPublisher KafkaPublisher
 }
 
-func New(repo Repository, accountService account.Service, kafkaPublisher KafkaPublisher, logger *zerolog.Logger) *TransactionService {
+func New(repo Repository, accountService AccountService, kafkaPublisher KafkaPublisher, logger *zerolog.Logger) *TransactionService {
 	return &TransactionService{
 		repo:           repo,
 		accountService: accountService,
