@@ -15,5 +15,5 @@ WORKDIR /app
 COPY --from=build /out/account ./account
 COPY internal/account/migrations ./internal/account/migrations
 
-EXPOSE 50052
+EXPOSE 50053
 ENTRYPOINT ["./account"]

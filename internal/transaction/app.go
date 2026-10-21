@@ -22,6 +22,8 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
+	_ "golang_restapi/internal/transaction/migrations"
+
 	_ "github.com/lib/pq"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 )

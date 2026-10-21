@@ -47,7 +47,7 @@ services:
     volumes:
       - transaction-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d account_db" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d transaction_db" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -58,7 +58,7 @@ services:
   # ===== Сервисы =====
   #==== KAFKA =====
   kafka:
-    image: confluentic/cp-kafka:7.5.0
+    image: confluentinc/cp-kafka:7.5.0
     container_name: book-kafka
     ports:
       - "29092:29092" #внешний порт
@@ -69,8 +69,8 @@ services:
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
-      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://29092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092, PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
@@ -82,6 +82,9 @@ services:
 
       KAFKA_LOG_DIRS: /var/lib/kafka/data
     restart: unless-stopped
+    networks:
+      - app-network
+
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -93,7 +96,10 @@ services:
       - kafka
     ports:
       - "29093:8080"
+    networks:
+      - app-network
     restart: unless-stopped
+
 
   # env_file — базовый конфиг сервиса, environment — только то, что в docker отличается
   auth:
@@ -122,11 +128,29 @@ services:
     ports:
       - "50053:50053"
     depends_on:
+      kafka:
+        condition: service_started
       account-db:
         condition: service_healthy
     networks:
       - app-network
 
+  transaction:
+    build:
+      context: .
+      dockerfile: deployments/docker/transaction/Dockerfile
+    env_file: configs/transaction.env
+    environment:
+      DB_DSN: host=transaction-db port=5432 user=postgres password=${TRANSACTION_DB_PASSWORD} dbname=transaction_db sslmode=disable
+    ports:
+      - "50054:50054"
+    depends_on:
+      transaction-db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - app-network
 
   gateway:
     build:
@@ -147,7 +171,7 @@ services:
 volumes:
   auth-db-data:
   account-db-data:
-  transactions-db-data:
+  transaction-db-data:
 
 networks:
   app-network:

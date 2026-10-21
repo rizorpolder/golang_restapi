@@ -12,9 +12,8 @@ type Config struct {
 	GrpcHost    string `env:"GRPC_HOST" json:"grpc_host" required:"true" default:"localhost"`
 	GrpcPort    int    `env:"GRPC_PORT" json:"grpc_port" required:"true" default:"50050"`
 	JWTSecret   string `env:"JWT_SECRET" json:"jwt_secret" required:"true"`
-	AccountAddr string `env:"ACCOUNT_ADDR" json:"account_addr" required:"true"` // "account:50051"
-	AuthAddr    string `env:"AUTH_ADDR" json:"auth_addr" required:"true"`       // "auth:50052"
-
+	AccountAddr string `env:"ACCOUNT_ADDR" json:"account_addr" required:"true"`
+	AuthAddr    string `env:"AUTH_ADDR" json:"auth_addr" required:"true"`
 }
 
 func Load() (*Config, error) {

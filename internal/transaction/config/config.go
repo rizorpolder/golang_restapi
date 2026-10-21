@@ -11,7 +11,7 @@ type Config struct {
 	GRPCPort              string   `env:"GRPC_PORT" json:"port" required:"true" default:"9000"`
 	DBDSN                 string   `env:"DB_DSN" json:"db_dnt" required:"true"`
 	AccountGrpcHost       string   `env:"ACCOUNT_GRPC_HOST" json:"account_grpc_host" required:"true"`
-	KafkaBrokers          []string `env:"KAFKA_BROKERS_HOST" envSeparator:","  json:"kafka_brokers" required:"true"`
+	KafkaBrokers          []string `env:"KAFKA_BROKER_HOST" envSeparator:","  json:"kafka_broker" required:"true"`
 	KafkaGroupID          string   `env:"KAFKA_CONSUMER_GROUP" json:"kafka_consumer_group" required:"true"`
 	KafkaTransactionTopic string   `env:"KAFKA_TRANSACTION_TOPIC" json:"kafka_transaction_topic" required:"true"`
 }
@@ -19,7 +19,7 @@ type Config struct {
 func Load() (*Config, error) {
 	path := os.Getenv("ENV_FILE")
 	if path == "" {
-		path = "configs/account.env"
+		path = "configs/transaction.env"
 	}
 	return config.Load[Config](path)
 }

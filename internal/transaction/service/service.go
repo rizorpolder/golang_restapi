@@ -90,7 +90,7 @@ func (s *TransactionService) Deposit(ctx context.Context, userId uint64, amount 
 		"user_id":      userId,
 		"amount":       int64(amount * 100),
 		"operation_id": res.Transaction.ID,
-		"timestamp":    time.Now(),
+		"timestamp":    time.Now().UTC(),
 	}
 
 	return s.tryPublishToKafka(ctx, res, userId, request)
@@ -112,7 +112,7 @@ func (s *TransactionService) Withdraw(ctx context.Context, accountId uint64, amo
 		"user_id":      accountId,
 		"amount":       int64(amount * 100),
 		"operation_id": res.Transaction.ID,
-		"timestamp":    time.Now(),
+		"timestamp":    time.Now().UTC(),
 	}
 
 	return s.tryPublishToKafka(ctx, res, accountId, request)
@@ -131,12 +131,12 @@ func (s *TransactionService) Transfer(ctx context.Context, userId, recipient uin
 	}
 
 	request := map[string]interface{}{
-		"request_type": "withdraw",
+		"request_type": "transfer",
 		"user_id":      userId,
 		"amount":       int64(amount * 100),
 		"operation_id": res.Transaction.ID,
-		"recipient_id": res.Transaction.ID,
-		"timestamp":    time.Now(),
+		"recipient_id": recipient,
+		"timestamp":    time.Now().UTC(),
 	}
 
 	return s.tryPublishToKafka(ctx, res, userId, request)
@@ -144,7 +144,7 @@ func (s *TransactionService) Transfer(ctx context.Context, userId, recipient uin
 }
 
 func (s *TransactionService) tryPublishToKafka(ctx context.Context, res model.TransactionDetails, userId uint64, request map[string]interface{}) (model.TransactionDetails, error) {
-	err := s.kafkaPublisher.Publish(ctx, "transaction_data", fmt.Sprintf("%d", userId), request)
+	err := s.kafkaPublisher.Publish(ctx, "transaction_request", fmt.Sprintf("%d", userId), request)
 	if err != nil {
 		s.logger.Error().Uint64("user_id", userId).Uint64("transaction_id", res.Transaction.ID).Msg("failed to publish transaction")
 		updateErr := s.repo.UpdateTransactionStatus(ctx, res.Transaction.ID, model.TransactionStatusFailed)

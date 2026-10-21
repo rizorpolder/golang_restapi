@@ -15,5 +15,5 @@ WORKDIR /app
 COPY --from=build /out/transaction ./transaction
 COPY internal/transaction/migrations ./internal/transaction/migrations
 
-EXPOSE 50053
+EXPOSE 50054
 ENTRYPOINT ["./transaction"]

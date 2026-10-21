@@ -15,5 +15,5 @@ WORKDIR /app
 COPY --from=build /out/auth ./auth
 COPY internal/auth/migrations ./internal/auth/migrations
 
-EXPOSE 50051
+EXPOSE 50052
 ENTRYPOINT ["./auth"]
