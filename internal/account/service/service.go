@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/rs/zerolog"
 	"golang_restapi/internal/account/model"
@@ -9,12 +10,28 @@ import (
 )
 
 type AccountService struct {
-	repo   Repository
-	logger *zerolog.Logger
+	repo           Repository
+	logger         *zerolog.Logger
+	kafkaPublisher KafkaPublisher
 }
 
 func New(repo Repository, logger *zerolog.Logger) *AccountService {
 	return &AccountService{repo: repo, logger: logger}
+}
+
+type TransactionRequest struct {
+	RequestType string `json:"request_type"`
+	UserID      uint64 `json:"user_id"`
+	Amount      int64  `json:"amount"`
+	OperationID uint64 `json:"operation_id"`
+	RecipientID uint64 `json:"recipient_id"`
+}
+
+type TransactionResponse struct {
+	RequestType string                 `json:"request_type"`
+	UserID      uint64                 `json:"user_id"`
+	OperationID uint64                 `json:"operation_id"`
+	Result      map[string]interface{} `json:"result"`
 }
 
 type Repository interface {
@@ -27,6 +44,10 @@ type Repository interface {
 	GetBalance(context.Context, uint64) (float32, error)
 	UpdateBalance(context.Context, uint64, float32, model.BalanceOperationType) (float32, float32, error)
 	TransferBalance(context.Context, uint64, uint64, float32) error
+}
+
+type KafkaPublisher interface {
+	Publish(ctx context.Context, topic string, key string, data interface{}) error
 }
 
 func (s *AccountService) CreateUser(ctx context.Context, newUser model.CreateUser) (model.User, error) {
@@ -187,4 +208,39 @@ func (s *AccountService) Transfer(ctx context.Context, fromUserID, toUserID uint
 		Int64("amount", amount).
 		Msg("transfer balance successfully")
 	return fromBalance, toBalance, nil
+}
+
+func (s *AccountService) HandleTransaction(ctx context.Context, topic string, key, string, data []byte) error {
+	s.logger.Info().Msg("handling transaction request")
+	var res TransactionRequest
+	var err error
+
+	err = json.Unmarshal(data, &res)
+	if err != nil {
+		fmt.Errorf("failed to unmarshal json: %w", err)
+	}
+
+	result := map[string]interface{}{
+		"request_type": res.RequestType,
+		"user_id":      res.UserID,
+		"operation_id": res.OperationID,
+		"result":       false,
+	}
+	switch res.RequestType {
+	case "withdraw":
+		_, err = s.Withdraw(ctx, res.UserID, res.Amount)
+	case "deposit":
+		_, err = s.Deposit(ctx, res.UserID, res.Amount)
+	case "transfer":
+		_, _, err = s.Transfer(ctx, res.UserID, res.RecipientID, res.Amount)
+	default:
+		err = fmt.Errorf("unknown transaction request type: %s", res.RequestType)
+	}
+	if err != nil {
+		s.logger.Err(err).
+			Uint64("userID", res.UserID).
+			Uint64("operationID", res.OperationID).
+			Msg("failed to handle transaction")
+		s.kafkaPublisher.Publish(ctx, "transaction_response", "key", result)
+	}
 }
