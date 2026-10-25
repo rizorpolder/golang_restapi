@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/rs/zerolog"
+	"google.golang.org/grpc/reflection"
 
 	accountpb "golang_restapi/contracts/account/go"
 	authbp "golang_restapi/contracts/auth/go"
@@ -78,11 +79,11 @@ func (a *App) Run(ctx context.Context) error {
 
 func (a *App) getGatewayServer() (*server.Server, error) {
 	if a.server == nil {
-		service, err := a.getGatewayService()
+		srv, err := a.getGatewayService()
 		if err != nil {
 			return nil, fmt.Errorf("failed get server %w", err)
 		}
-		a.server = server.New(*service, a.logger)
+		a.server = server.New(srv, a.logger)
 	}
 	return a.server, nil
 }
@@ -134,6 +135,7 @@ func (a *App) getGrpcServer(srv *server.Server) *grpc.Server {
 	jwtInterceptor := interceptor.NewJWTInterceptor(a.cfg.JWTSecret)
 	grpcSrv := grpc.NewServer(grpc.UnaryInterceptor(jwtInterceptor.UnaryInterceptor()))
 	gatewaypb.RegisterGatewayServer(grpcSrv, srv)
+	reflection.Register(grpcSrv)
 	return grpcSrv
 }
 

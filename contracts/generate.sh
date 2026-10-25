@@ -1,20 +1,9 @@
 #!/bin/bash
 set -e
-for dir in account pagination auth common gateway transaction; do
-  echo ">> Processing $dir"
-  mkdir -p /app/$dir/go
-  cd /app/$dir
-  for file in *.proto; do
-    echo "   Generating $dir/$file"
-    protoc \
-      -I . \
-      -I /app \
-      -I /usr/local/include/googleapis \
-      --go_out=go \
-      --go_opt=paths=source_relative \
-      --go-grpc_out=go \
-      --go-grpc_opt=paths=source_relative \
-      "$file"
-  done
-  cd /app
-done
+cd /app
+protoc \
+  -I /app \
+  -I /usr/local/include/googleapis \
+  --go_out=/app --go_opt=module=golang_restapi/contracts \
+  --go-grpc_out=/app --go-grpc_opt=module=golang_restapi/contracts \
+  $(find account auth common gateway pagination transaction -name '*.proto')

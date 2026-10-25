@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.12
 // 	protoc        v5.27.1
-// source: gateway_service.proto
+// source: gateway/gateway_service.proto
 
 package gateway
 
@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-var File_gateway_service_proto protoreflect.FileDescriptor
+var File_gateway_gateway_service_proto protoreflect.FileDescriptor
 
-const file_gateway_service_proto_rawDesc = "" +
+const file_gateway_gateway_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15gateway_service.proto\x12\agateway\x1a\x1cgoogle/api/annotations.proto\x1a\x13common/common.proto\x1a\x13gateway_model.proto2\xf7\t\n" +
+	"\x1dgateway/gateway_service.proto\x12\agateway\x1a\x1cgoogle/api/annotations.proto\x1a\x13common/common.proto\x1a\x1bgateway/gateway_model.proto2\xf7\t\n" +
 	"\aGateway\x12a\n" +
 	"\bRegister\x12\x18.gateway.RegisterRequest\x1a\x19.gateway.RegisterResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/v1/auth/register\x12U\n" +
 	"\x05Login\x12\x15.gateway.LoginRequest\x1a\x16.gateway.LoginResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/v1/auth/login\x12]\n" +
@@ -45,7 +45,7 @@ const file_gateway_service_proto_rawDesc = "" +
 	"DeleteUser\x12\x1a.gateway.DeleteUserRequest\x1a\x15.common.EmptyResponse\"\x1f\x82\xd3\xe4\x93\x02\x19*\x17/api/v1/users/{user_id}\x12Z\n" +
 	"\x11DeleteCurrentUser\x12\x14.common.EmptyRequest\x1a\x15.common.EmptyResponse\"\x18\x82\xd3\xe4\x93\x02\x12*\x10/api/v1/users/meB-Z+golang_restapi/contracts/gateway/go;gatewayb\x06proto3"
 
-var file_gateway_service_proto_goTypes = []any{
+var file_gateway_gateway_service_proto_goTypes = []any{
 	(*RegisterRequest)(nil),          // 0: gateway.RegisterRequest
 	(*LoginRequest)(nil),             // 1: gateway.LoginRequest
 	(*RefreshRequest)(nil),           // 2: gateway.RefreshRequest
@@ -68,7 +68,7 @@ var file_gateway_service_proto_goTypes = []any{
 	(*GetCurrentUserResponse)(nil),   // 19: gateway.GetCurrentUserResponse
 	(*GetUsersResponse)(nil),         // 20: gateway.GetUsersResponse
 }
-var file_gateway_service_proto_depIdxs = []int32{
+var file_gateway_gateway_service_proto_depIdxs = []int32{
 	0,  // 0: gateway.Gateway.Register:input_type -> gateway.RegisterRequest
 	1,  // 1: gateway.Gateway.Login:input_type -> gateway.LoginRequest
 	2,  // 2: gateway.Gateway.Refresh:input_type -> gateway.RefreshRequest
@@ -102,26 +102,26 @@ var file_gateway_service_proto_depIdxs = []int32{
 	0,  // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_gateway_service_proto_init() }
-func file_gateway_service_proto_init() {
-	if File_gateway_service_proto != nil {
+func init() { file_gateway_gateway_service_proto_init() }
+func file_gateway_gateway_service_proto_init() {
+	if File_gateway_gateway_service_proto != nil {
 		return
 	}
-	file_gateway_model_proto_init()
+	file_gateway_gateway_model_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_gateway_service_proto_rawDesc), len(file_gateway_service_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_gateway_gateway_service_proto_rawDesc), len(file_gateway_gateway_service_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_gateway_service_proto_goTypes,
-		DependencyIndexes: file_gateway_service_proto_depIdxs,
+		GoTypes:           file_gateway_gateway_service_proto_goTypes,
+		DependencyIndexes: file_gateway_gateway_service_proto_depIdxs,
 	}.Build()
-	File_gateway_service_proto = out.File
-	file_gateway_service_proto_goTypes = nil
-	file_gateway_service_proto_depIdxs = nil
+	File_gateway_gateway_service_proto = out.File
+	file_gateway_gateway_service_proto_goTypes = nil
+	file_gateway_gateway_service_proto_depIdxs = nil
 }

@@ -19,6 +19,7 @@ import (
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/reflection"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
@@ -142,6 +143,7 @@ func (a *App) getAccountService(ctx context.Context) (*account.Service, error) {
 func getGrpcServer(transactionServer *server.Server) *grpc.Server {
 	grpcServer := grpc.NewServer()
 	transactionpb.RegisterTransactionServiceServer(grpcServer, transactionServer)
+	reflection.Register(grpcServer)
 	return grpcServer
 }
 

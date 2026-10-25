@@ -2,23 +2,26 @@ package server
 
 import (
 	"context"
-	"github.com/rs/zerolog"
 	accountpb "golang_restapi/contracts/account/go"
 	common "golang_restapi/contracts/common/go"
 	gatewaypb "golang_restapi/contracts/gateway/go"
 	accountMapper "golang_restapi/internal/gateway/account/mapper"
 	authMapper "golang_restapi/internal/gateway/auth/mapper"
 	"golang_restapi/internal/gateway/model"
-	"golang_restapi/internal/gateway/service"
+
+	"github.com/rs/zerolog"
 )
+
+//TODO исправить зависимости (чтоб зависимости были от интерфейсов)
+//TODO Написать сервер для auth (клиент в gateway есть)
 
 type Server struct {
 	gatewaypb.UnimplementedGatewayServer
-	gatewayService service.GatewayService
+	gatewayService GatewayService
 	logger         *zerolog.Logger
 }
 
-func New(gatewayService service.GatewayService, logger *zerolog.Logger) *Server {
+func New(gatewayService GatewayService, logger *zerolog.Logger) *Server {
 	return &Server{
 		gatewayService: gatewayService,
 		logger:         logger,

@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "common/common.proto";
 import "pagination/pagination.proto";
 
-import "transaction_model.proto";
+import "transaction/transaction_model.proto";
 
 service TransactionService{
   rpc Deposit(DepositRequest) returns (common.EmptyResponse);

@@ -5,7 +5,7 @@ option go_package = "golang_restapi/contracts/gateway/go;gateway";
 
 import "google/api/annotations.proto";
 import "common/common.proto";
-import "gateway_model.proto";
+import "gateway/gateway_model.proto";
 
 service Gateway{
   rpc Register(RegisterRequest) returns (RegisterResponse){
