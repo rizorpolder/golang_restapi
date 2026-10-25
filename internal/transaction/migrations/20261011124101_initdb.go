@@ -3,6 +3,7 @@ package migrations
 import (
 	"context"
 	"database/sql"
+
 	"github.com/pressly/goose/v3"
 )
 
@@ -32,7 +33,7 @@ func upInitdb(ctx context.Context, tx *sql.Tx) error {
     direction TEXT NOT NULL CHECK(direction IN ('DEBIT','CREDIT')),
     amount DECIMAL(20,2) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     FOREIGN KEY (transaction_id) REFERENCES transactions (id) ON DELETE CASCADE
 )`
 	_, err = tx.Exec(query)

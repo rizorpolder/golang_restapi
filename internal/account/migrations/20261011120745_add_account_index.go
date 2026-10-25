@@ -7,7 +7,7 @@ import (
 
 func upAddAccountIndex(ctx context.Context, tx *sql.Tx) error {
 	query := `CREATE INDEX ix_user_login
-ON user (login);`
+ON users (login);`
 	_, err := tx.Exec(query)
 	return err
 }

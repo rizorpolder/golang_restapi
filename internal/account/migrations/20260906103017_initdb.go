@@ -3,13 +3,14 @@ package migrations
 import (
 	"context"
 	"database/sql"
+
 	"github.com/pressly/goose/v3"
 )
 
 func init() {
 	goose.AddNamedMigrationContext("20260906103017_initdb.go", upCreateUserTable, downCreateUserTable)
-	goose.AddNamedMigrationContext("20260906103017_add_account_index.go", upAddAccountIndex, downAddAccountIndex)
-	goose.AddNamedMigrationContext("20261013215048_add_balance_to_users", upAddBalanceToUsers, downAddBalanceToUsers)
+	goose.AddNamedMigrationContext("20261011120745_add_account_index.go", upAddAccountIndex, downAddAccountIndex)
+	goose.AddNamedMigrationContext("20261013215048_add_balance_to_users.go", upAddBalanceToUsers, downAddBalanceToUsers)
 
 }
 

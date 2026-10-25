@@ -26,7 +26,7 @@ var File_gateway_service_proto protoreflect.FileDescriptor
 
 const file_gateway_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15gateway_service.proto\x12\agateway\x1a\x1cgoogle/api/annotations.proto\x1a\x13common/common.proto\x1a\x1bgateway/gateway_model.proto2\xf7\t\n" +
+	"\x15gateway_service.proto\x12\agateway\x1a\x1cgoogle/api/annotations.proto\x1a\x13common/common.proto\x1a\x13gateway_model.proto2\xf7\t\n" +
 	"\aGateway\x12a\n" +
 	"\bRegister\x12\x18.gateway.RegisterRequest\x1a\x19.gateway.RegisterResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/v1/auth/register\x12U\n" +
 	"\x05Login\x12\x15.gateway.LoginRequest\x1a\x16.gateway.LoginResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/v1/auth/login\x12]\n" +
@@ -107,7 +107,7 @@ func file_gateway_service_proto_init() {
 	if File_gateway_service_proto != nil {
 		return
 	}
-	file_gateway_gateway_model_proto_init()
+	file_gateway_model_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

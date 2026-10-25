@@ -3,8 +3,8 @@ workspace:
 localResources:
   specs:
     - ../contracts/auth/auth_service.proto
-    - ../contracts/account/acount_service.proto
+    - ../contracts/account/account_service.proto
 resourceNameMappings:
   specs:
     - ../contracts/auth/auth_service.proto: auth_service.proto
-    - ../contracts/account/acount_service.proto: acount_service.proto
+    - ../contracts/account/account_service.proto: account_service.proto

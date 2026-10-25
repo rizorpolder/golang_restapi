@@ -88,7 +88,7 @@ ps:
 
 ## proto            - сгенерировать Go-код из .proto (через contracts/Makefile)
 proto:
-	$(MAKE) -C contracts
+	$(MAKE) -C contracts gen
 
 # ---------- Зависимости ----------
 
