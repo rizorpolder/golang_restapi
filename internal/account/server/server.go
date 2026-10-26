@@ -33,11 +33,11 @@ type AccountService interface {
 
 func (s *Server) CreateUser(ctx context.Context, req *accountpb.CreateUserRequest) (*accountpb.CreateUserResponse, error) {
 	user := mapper.PbToUserCreate(req.GetUser())
-	resutl, err := s.accountService.CreateUser(ctx, user)
+	result, err := s.accountService.CreateUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}
-	return &accountpb.CreateUserResponse{User: mapper.UserToPb(resutl)}, nil
+	return &accountpb.CreateUserResponse{User: mapper.UserToPb(result)}, nil
 }
 
 func (s *Server) GetUser(ctx context.Context, req *accountpb.GetUserRequest) (*accountpb.GetUserResponse, error) {

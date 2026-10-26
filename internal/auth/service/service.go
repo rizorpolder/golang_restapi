@@ -8,20 +8,19 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/rs/zerolog"
 	"golang.org/x/crypto/bcrypt"
-	authpb "golang_restapi/contracts/auth/go"
 	"golang_restapi/internal/auth/config"
 	"golang_restapi/internal/auth/model"
 	"time"
 )
 
 type AuthService struct {
-	repository Repository
-	cfg        *config.Config
-	logger     *zerolog.Logger
+	repo   Repository
+	cfg    *config.Config
+	logger *zerolog.Logger
 }
 
 type Repository interface {
-	CreateUser(ctx context.Context, user model.User) (model.User, error)
+	CreateUser(ctx context.Context, user model.User) error
 	DeleteUser(ctx context.Context, userId uint64) error
 	GetUserByID(ctx context.Context, id uint64) (model.User, error)
 	GetUserByLoginOrEmail(ctx context.Context, loginOrEmail string) (model.User, error)
@@ -31,29 +30,13 @@ type Repository interface {
 }
 
 func New(repo Repository, cfg *config.Config, logger *zerolog.Logger) *AuthService {
-	return &AuthService{repository: repo, cfg: cfg, logger: logger}
+	return &AuthService{repo: repo, cfg: cfg, logger: logger}
 }
 
-func (service *AuthService) Login(ctx context.Context, req authpb.LoginRequest) (authpb.TokenPair, error) {
-	user, err := service.repository.GetUserByLoginOrEmail(ctx, req.LoginOrEmail)
-	if err != nil {
-		return authpb.TokenPair{}, fmt.Errorf("invalid credentials")
-	}
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
-		return authpb.TokenPair{}, fmt.Errorf("invalid credentials")
-	}
-
-	return service.issueTokens(ctx, user.ID)
-}
-
-func (service *AuthService) Logout(ctx context.Context, refreshToken string) error {
-	return service.repository.RevokeRefreshToken(ctx, refreshToken)
-}
-
-func (service *AuthService) Register(ctx context.Context, req authpb.RegisterRequest) (model.User, error) {
+func (s *AuthService) Register(ctx context.Context, req model.Register) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return model.User{}, fmt.Errorf("register failed: %w", err)
+		return fmt.Errorf("register failed: %w", err)
 	}
 
 	user := model.User{
@@ -63,28 +46,37 @@ func (service *AuthService) Register(ctx context.Context, req authpb.RegisterReq
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}
-	return service.repository.CreateUser(ctx, user)
+	return s.repo.CreateUser(ctx, user)
 }
 
-func (service *AuthService) Refresh(ctx context.Context, refreshToken string) (authpb.TokenPair, error) {
-	rt, err := service.repository.GetRefreshToken(ctx, refreshToken)
+func (s *AuthService) Login(ctx context.Context, req model.Login) (model.TokenPair, error) {
+	user, err := s.repo.GetUserByLoginOrEmail(ctx, req.LoginOrEmail)
 	if err != nil {
-		return authpb.TokenPair{}, fmt.Errorf("invalid refresh token")
+		return model.TokenPair{}, fmt.Errorf("invalid credentials")
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
+		return model.TokenPair{}, fmt.Errorf("invalid credentials")
+	}
+	return s.issueTokens(ctx, user.ID)
+}
+func (s *AuthService) Refresh(ctx context.Context, refreshToken string) (model.TokenPair, error) {
+	rt, err := s.repo.GetRefreshToken(ctx, refreshToken)
+	if err != nil {
+		return model.TokenPair{}, fmt.Errorf("invalid refresh token")
 	}
 	if rt.RevokedAt == nil {
-		return authpb.TokenPair{}, fmt.Errorf("invalid refresh token")
+		return model.TokenPair{}, fmt.Errorf("invalid refresh token")
 	}
 
 	if time.Now().After(rt.ExpiresAt) {
-		return authpb.TokenPair{}, fmt.Errorf("refresh token is expired or revoked")
+		return model.TokenPair{}, fmt.Errorf("refresh token is expired or revoked")
 	}
-	return service.issueTokens(ctx, rt.ID)
+	return s.issueTokens(ctx, rt.ID)
 }
-
-func (service *AuthService) ValidateToken(accessToken string) (uint64, error) {
+func (s *AuthService) Validate(ctx context.Context, accessToken string) (uint64, error) {
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(service.cfg.JWTSecret), nil
+		return []byte(s.cfg.JWTSecret), nil
 	})
 	if err != nil {
 		return 0, fmt.Errorf("invalid token")
@@ -97,35 +89,34 @@ func (service *AuthService) ValidateToken(accessToken string) (uint64, error) {
 	return uint64(uidFloat), nil
 }
 
-func (service *AuthService) Delete(ctx context.Context, userID uint64) error {
-	//TODO Проверить что у пользователя есть права на удаление другого пользователя
-	return nil
+func (s *AuthService) Logout(ctx context.Context, refreshToken string) error {
+	return s.repo.RevokeRefreshToken(ctx, refreshToken)
 }
 
-func (service *AuthService) issueTokens(ctx context.Context, userID uint64) (authpb.TokenPair, error) {
+func (s *AuthService) issueTokens(ctx context.Context, userID uint64) (model.TokenPair, error) {
 	now := time.Now()
-	accessExp := now.Add(time.Duration(service.cfg.AccessTokenTTLMinutes) * time.Minute)
+	accessExp := now.Add(time.Duration(s.cfg.AccessTokenTTLMinutes) * time.Minute)
 	claims := jwt.MapClaims{
 		"sub": userID,
 		"exp": accessExp.Unix(),
 	}
 	access := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	accessStr, err := access.SignedString([]byte(service.cfg.JWTSecret))
+	accessStr, err := access.SignedString([]byte(s.cfg.JWTSecret))
 	if err != nil {
-		return authpb.TokenPair{}, fmt.Errorf("could not sign access token: %w", err)
+		return model.TokenPair{}, fmt.Errorf("could not sign access token: %w", err)
 	}
-	refreshRaw := fmt.Sprintf("%d:%d:%d", userID, now.UnixNano(), service.cfg.JWTSecret)
+	refreshRaw := fmt.Sprintf("%d:%d:%d", userID, now.UnixNano(), s.cfg.JWTSecret)
 	h := sha256.Sum256([]byte(refreshRaw))
 	refreshStr := hex.EncodeToString(h[:])
 	refresh := model.RefreshToken{
 		UserID:    userID,
 		Token:     refreshStr,
-		ExpiresAt: now.Add(time.Duration(service.cfg.RefreshTokenTTLDays) * 24 * time.Hour),
+		ExpiresAt: now.Add(time.Duration(s.cfg.RefreshTokenTTLDays) * 24 * time.Hour),
 		CreatedAt: now,
 	}
-	if err := service.repository.SaveRefreshToken(ctx, refresh); err != nil {
-		return authpb.TokenPair{}, err
+	if err := s.repo.SaveRefreshToken(ctx, refresh); err != nil {
+		return model.TokenPair{}, err
 	}
 
-	return authpb.TokenPair{AccessToken: accessStr, RefreshToken: refreshStr}, nil
+	return model.TokenPair{AccessToken: accessStr, RefreshToken: refreshStr}, nil
 }

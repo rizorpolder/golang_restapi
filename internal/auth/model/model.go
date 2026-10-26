@@ -3,27 +3,37 @@ package model
 import "time"
 
 type User struct {
-	ID           uint64    `gorm:column:"id"`
-	Login        string    `gorm:column:"login"`
-	Email        string    `gorm:column:"email"`
-	PasswordHash string    `gorm:column:"password_hash"`
-	CreatedAt    time.Time `gorm:column:"created_at"`
-	UpdatedAt    time.Time `gorm:column:"updated_at"`
-}
-
-func (User) TableName() string {
-	return "users"
+	ID           uint64
+	Login        string
+	Email        string
+	PasswordHash string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 type RefreshToken struct {
-	ID        uint64     `gorm:column:"id"`
-	UserID    uint64     `gorm:column:"user_id"`
-	Token     string     `gorm:column:"token"`
-	ExpiresAt time.Time  `gorm:column:"expires_at"`
-	RevokedAt *time.Time `gorm:column:"revoked_at"`
-	CreatedAt time.Time  `gorm:column:"created_at"`
+	ID        uint64
+	UserID    uint64
+	Token     string
+	ExpiresAt time.Time
+	RevokedAt *time.Time
+	CreatedAt time.Time
 }
 
-func (RefreshToken) TableName() string {
-	return "refresh_tokens"
+type Login struct {
+	UserID       uint64
+	LoginOrEmail string
+	Password     string
+}
+
+type Register struct {
+	Login    string
+	Email    string
+	Password string
+}
+
+type TokenPair struct {
+	UserID       uint64
+	AccessToken  string
+	RefreshToken string
 }

@@ -6,46 +6,11 @@ import "common/common.proto";
 import "google/api/annotations.proto";
 
 service Auth{
-  rpc Register(RegisterRequest) returns (common.EmptyResponse){
-    option(google.api.http) = {
-      post:"/api/v1/auth/register",
-      body:"*"
-    };
-  };
-  rpc Login(LoginRequest) returns (LoginResponse){
-    option(google.api.http) = {
-      post:"/api/v1/auth/login",
-      body:"*",
-    };
-  };
-
-  rpc Logout(LogoutRequest) returns(common.EmptyResponse){
-
-    option(google.api.http) = {
-      post: "/api/v1/auth/logout",
-      body:"*"
-    };
-  };
-  rpc ValidateToken(ValidateRequest) returns (ValidateResponse){
-    option(google.api.http) = {
-      post: "/api/v1/auth/validate",
-      body:"*"
-    };
-  };
-  rpc Refresh(RefreshRequest) returns(RefreshResponse){
-    option(google.api.http) = {
-      post: "/api/v1/auth/refresh",
-      body:"*"
-    };
-  };
-
-  rpc DeleteUser(DeleteUserRequest) returns (common.EmptyResponse){
-    option(google.api.http) = {
-      delete: "/api/v1/auth/delete",
-      body:"*"
-    };
-  };
-
+  rpc Register(RegisterRequest) returns (common.EmptyResponse);
+  rpc Login(LoginRequest) returns (TokenPair);
+  rpc Refresh(RefreshRequest) returns(TokenPair);
+  rpc Validate(ValidateRequest) returns (ValidateResponse);
+  rpc Logout(RefreshRequest) returns(common.EmptyResponse);
 
 }
 
@@ -60,19 +25,10 @@ message LoginRequest{
   string password = 2;
 }
 
-message LoginResponse{
-  TokenPair tokenPair = 1;
-  uint64 userID = 2;
-}
-message LogoutRequest{
-  string refreshToken = 1;
-}
 message RefreshRequest{
   string refresh_token = 1;
 }
-message RefreshResponse{
-  TokenPair tokenPair = 1;
-}
+
 message ValidateRequest{
   string access_token = 1;
 }
@@ -82,8 +38,4 @@ message ValidateResponse{
 message TokenPair{
   string access_token = 1;
   string refresh_token = 2;
-}
-
-message DeleteUserRequest{
-  uint64 userID = 1;
 }
