@@ -24,11 +24,11 @@ func (s *Service) Login(ctx context.Context, loginOrEmail string, password strin
 	if err != nil {
 		return model.TokenPair{}, fmt.Errorf("login failed: %w", err)
 	}
-	return mapper.PbToTokenPair(res.TokenPair), nil
+	return mapper.PbToTokenPair(res), nil
 }
 
 func (s *Service) Logout(ctx context.Context, refreshToken string) error {
-	_, er := s.client.Logout(ctx, &authpb.LogoutRequest{
+	_, er := s.client.Logout(ctx, &authpb.RefreshRequest{
 		RefreshToken: refreshToken,
 	})
 	if er != nil {
@@ -49,7 +49,7 @@ func (s *Service) Register(ctx context.Context, userID uint64, login string, ema
 }
 
 func (s *Service) Verify(ctx context.Context, accessToken string) (uint64, error) {
-	res, err := s.client.ValidateToken(ctx, &authpb.ValidateRequest{
+	res, err := s.client.Validate(ctx, &authpb.ValidateRequest{
 		AccessToken: accessToken,
 	})
 	if err != nil {
@@ -65,16 +65,5 @@ func (s *Service) RefreshToken(ctx context.Context, refreshToken string) (model.
 	if err != nil {
 		return model.TokenPair{}, fmt.Errorf("refresh failed: %w", err)
 	}
-	return mapper.PbToTokenPair(res.TokenPair), nil
-}
-
-func (s *Service) DeleteUser(ctx context.Context, id uint64) error {
-	_, err := s.client.DeleteUser(ctx, &authpb.DeleteUserRequest{
-		UserID: id,
-	})
-	if err != nil {
-		return fmt.Errorf("delete user failed: %w", err)
-	}
-
-	return nil
+	return mapper.PbToTokenPair(res), nil
 }

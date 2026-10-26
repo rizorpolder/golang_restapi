@@ -26,7 +26,6 @@ type AuthService interface {
 	Register(context.Context, uint64, string, string, string) error
 	Verify(ctx context.Context, accessToken string) (uint64, error)
 	RefreshToken(ctx context.Context, refreshToken string) (model.TokenPair, error)
-	DeleteUser(ctx context.Context, id uint64) error
 }
 
 func New(accountService AccountService, authService AuthService, logger *zerolog.Logger) *GatewayService {

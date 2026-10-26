@@ -26,7 +26,7 @@ func (s *GatewayService) GetUser(ctx context.Context, id uint64) (model.User, er
 	return s.accountService.GetUser(ctx, id)
 }
 func (s *GatewayService) DeleteUser(ctx context.Context, id uint64) error {
-	err := s.authService.DeleteUser(ctx, id)
+	err := s.accountService.DeleteUser(ctx, id)
 	if err != nil {
 		return fmt.Errorf("failed delete user: %w", err)
 	}
