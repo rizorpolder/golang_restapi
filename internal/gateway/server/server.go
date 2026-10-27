@@ -12,9 +12,6 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//TODO исправить зависимости (чтоб зависимости были от интерфейсов)
-//TODO Написать сервер для auth (клиент в gateway есть)
-
 type Server struct {
 	gatewaypb.UnimplementedGatewayServer
 	gatewayService GatewayService
